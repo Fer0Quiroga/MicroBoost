@@ -1,0 +1,410 @@
+﻿@model List<ProyectoControlLineaBus.Models.MuestraRutasMapas>
+
+@{
+    ViewBag.Title = "Ruta";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Administrar Ruta</title>
+
+    <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+    <!-- CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <!-- JS de Bootstrap y jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+    <style>
+        .route-link {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+            .route-link:hover {
+                color: #0056b3;
+            }
+
+        .table-section {
+            margin-top: 20px;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa; /* Blanco con sombra ligera */
+            cursor: pointer;
+        }
+
+        .ruta-descripcion, .parada-descripcion {
+            display: none;
+        }
+
+        /* Estilos para el campo de búsqueda */
+        .search-box {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 class="text-center">Ruta</h2>
+    <div class="row">
+        <div class="col-md-1 mb-2">
+            @Html.ActionLink("Volver", "HomeLine", "Line", "", new { @class = "btn btn-outline-primary" })
+        </div>
+        <div class="col-md-3 mb-2">
+            <a id="crearNuevo" href="#" class="btn btn-info">Crear Nuevo</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10">
+            <div id="map" style="height: 350px;"></div>
+        </div>
+        <div class="col-md-2">
+            <div class="route-selection">
+                <span class="btn btn-danger mb-2" onclick="enfocarRuta(1)">Ruta 1</span>
+                <span class="btn btn-danger mb-2" onclick="enfocarRuta(2)">Ruta 2</span>
+                <span class="btn btn-danger mb-2" onclick="enfocarRuta(3)">Alternativa Ruta 1</span>
+                <span class="btn btn-danger mb-2" onclick="enfocarRuta(4)">Alternativa Ruta 2</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row table-section">
+        <div class="col-md-6">
+            <input type="text" class="form-control search-box" id="searchParadas" placeholder="Buscar paradas...">
+            <table class="table text-center text-white">
+                <thead>
+                    <tr>
+                        <th style="text-align:center">Descripción</th>
+                    </tr>
+                </thead>
+                <tbody id="paradasTableBody">
+                    @foreach (var item in Model)
+                    {
+                        if (item.ListParadasMostrar != null && item.ListParadasMostrar.Count > 0)
+                        {
+                            foreach (var parada in item.ListParadasMostrar.Where(x => x.status == 1))
+                            {
+                                <tr class="parada-descripcion parada-@item.NumeroRuta" data-lat="@parada.latitud" data-lng="@parada.longitud">
+                                    <td>
+                                        @Html.DisplayFor(modelItem => parada.description)
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#confirmationModal" data-id="@parada.idCheckpoint" data-description="@parada.description">Eliminar</a>
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Editar", "EditCheck", "Route", new{id = parada.idCheckpoint }, new { @class = "btn btn-outline-primary" })
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <input type="text" class="form-control search-box" id="searchUbicaciones" placeholder="Buscar ubicaciones...">
+            <table class="table text-center text-white">
+                <thead>
+                    <tr>
+                        <th style="text-align:center">Descripción</th>
+                    </tr>
+                </thead>
+                <tbody id="ubicacionesTableBody">
+                    @foreach (var item in Model)
+                    {
+                        if (item.ListRutasMostrar != null && item.ListRutasMostrar.Count > 0)
+                        {
+                            foreach (var item2 in item.ListRutasMostrar.Where(x => x.status != 2))
+                            {
+                                <tr class="ruta-descripcion ruta-@item.NumeroRuta" data-lat="@item2.latitud" data-lng="@item2.longitud">
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item2.name)
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#personModal" data-id="@item2.idRoute" data-description="@item2.name">Eliminar</a>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para confirmación de eliminación -->
+    <div class="modal fade" id="personModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel" style="color:black">Confirmar Eliminación</h5>
+                    <button type="button" style="color:black" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="color:black">
+                    ¿Estás seguro de que deseas eliminar esta ruta?
+                    <p><span id="description"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a id="confirmDelete" href="#" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="color:black" id="confirmationModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" style="color:black" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="color:black">
+                    ¿Estás seguro de que deseas eliminar el checkpoint?: <p><span id="checkpointDescription"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a id="confirmDelete" href="#" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS de Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+    var map = L.map('map').setView([-17.3935, -66.1570], 15);
+
+    // Agregar el tile layer de Mapbox al mapa
+    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ', {
+        maxZoom: 19,
+        tileSize: 512,
+        zoomOffset: -1,
+    }).addTo(map);
+
+    var startIcon = L.divIcon({
+        className: 'custom-start-icon',
+        html: '<div style="background-color: green; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+    });
+
+    var endIcon = L.divIcon({
+        className: 'custom-end-icon',
+        html: '<div style="background-color: red; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+    });
+
+    var rutas = [];
+    var paradas = [];
+    var marker = null; // marcador para la descripción
+    var selectedRouteNumber = 1; // Por defecto la ruta 1
+
+    @foreach (var item in Model)
+    {
+        @:var waypoints = [];
+
+        foreach (var route in item.ListRutasMostrar)
+        {
+        @:    waypoints.push([@route.latitud, @route.longitud]);
+        }
+
+        @:rutas.push({
+        @:    nombre: 'Ruta @item.NumeroRuta',
+        @:    waypoints: waypoints,
+        @:    color: '#007bff' // Color azul para todas las rutas
+        @:});
+
+        foreach (var parada in item.ListParadasMostrar.Where(x => x.status == 1))
+        {
+            @:paradas.push({
+            @:    latLng: [@parada.latitud, @parada.longitud],
+            @:    descripcion: '@parada.description',
+            @:    numeroRuta: @item.NumeroRuta
+            @:});
+        }
+    }
+
+    var routeLayers = []; // Mantener referencia a las capas de rutas
+    var paradasLayers = []; // Mantener referencia a las capas de paradas
+
+    function agregarRutas() {
+        rutas.forEach(function (ruta) {
+            var waypointsLatLng = ruta.waypoints.map(function(coord) {
+                return L.latLng(coord[0], coord[1]);
+            });
+
+            var routeLayer = L.polyline(waypointsLatLng, {
+                color: ruta.color,
+                weight: 4,
+                opacity: 0.8
+            }).addTo(map);
+
+            var startMarker = L.marker(waypointsLatLng[0], { icon: startIcon }).addTo(map);
+            var endMarker = L.marker(waypointsLatLng[waypointsLatLng.length - 1], { icon: endIcon }).addTo(map);
+
+            routeLayers.push({
+                layer: routeLayer,
+                startMarker: startMarker,
+                endMarker: endMarker,
+                nombre: ruta.nombre
+            });
+        });
+
+        // Agregar las paradas al mapa con el marcador predeterminado de Leaflet
+        paradas.forEach(function(parada) {
+            var marker = L.marker(parada.latLng).addTo(map).bindPopup(parada.descripcion);
+            paradasLayers.push(marker);
+        });
+
+        // Ajustar la vista para mostrar todas las rutas
+        var group = new L.featureGroup(routeLayers.map(function(r) { return r.layer; }));
+        map.fitBounds(group.getBounds());
+    }
+    function enfocarRuta(numeroRuta) {
+        selectedRouteNumber = numeroRuta;
+
+        // Limpia el campo de búsqueda cuando se selecciona una nueva ruta
+        document.getElementById('searchParadas').value = '';
+        document.getElementById('searchUbicaciones').value = '';
+
+        if (marker) {
+            map.removeLayer(marker); // Remueve el marcador del mapa
+        }
+
+        // Mostrar solo la ruta seleccionada y sus marcadores en el mapa
+        routeLayers.forEach(function (route, index) {
+            if (index + 1 === numeroRuta) {
+                map.addLayer(route.layer);
+                map.addLayer(route.startMarker);
+                map.addLayer(route.endMarker);
+                map.fitBounds(route.layer.getBounds());
+            } else {
+                map.removeLayer(route.layer);
+                map.removeLayer(route.startMarker);
+                map.removeLayer(route.endMarker);
+            }
+        });
+
+        paradasLayers.forEach(function(marker, index) {
+            var parada = paradas[index];
+            if (parada.numeroRuta === numeroRuta || parada.numeroRuta === 0) {
+                marker.addTo(map);
+            } else {
+                map.removeLayer(marker);
+            }
+        });
+        mostrarDescripciones(numeroRuta);
+    }
+
+    function mostrarDescripciones(numeroRuta) {
+        $('.ruta-descripcion').hide();
+        $('.parada-descripcion').hide();
+        $('.ruta-' + numeroRuta).show();
+        $('.parada-' + numeroRuta).show();
+        $('.parada-0').show(); // Mostrar siempre las paradas con clase 0
+    }
+
+    $('tr').click(function () {
+        var lat = $(this).data('lat');
+        var lng = $(this).data('lng');
+
+        if (marker) {
+            map.removeLayer(marker); // Eliminar marcador anterior
+        }
+
+        marker = L.marker([lat, lng]).addTo(map); // Agregar nuevo marcador
+        map.setView([lat, lng], 17); // Hacer zoom al marcador
+    });
+
+    agregarRutas();
+
+    $('#personModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var description = button.data('description');
+        var modal = $(this);
+        modal.find('#description').text(description);
+        modal.find('#confirmDelete').attr('href', '@Url.Action("Delete", "Route")/' + button.data('id'));
+    });
+
+    $('#confirmationModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var description = button.data('description');
+        var modal = $(this);
+        modal.find('#checkpointDescription').text(description);
+        modal.find('#confirmDelete').attr('href', '@Url.Action("Delete", "Checkpoint")/' + button.data('id'));
+    });
+
+    // Buscador para las paradas
+    function searchParadas(classSelector) {
+        var input = $('#searchParadas').val().toLowerCase();
+        var rows = $(classSelector);
+
+        rows.each(function() {
+            var row = $(this);
+            var cellText = row.text().toLowerCase();
+            row.toggle(cellText.indexOf(input) > -1);
+        });
+    }
+
+    // Buscador para las ubicaciones
+    function searchUbicaciones(classSelector) {
+        var input = $('#searchUbicaciones').val().toLowerCase();
+        var rows = $(classSelector);
+
+        rows.each(function() {
+            var row = $(this);
+            var cellText = row.text().toLowerCase();
+            row.toggle(cellText.indexOf(input) > -1);
+        });
+    }
+
+    // Listeners para los buscadores
+    $('#searchParadas').on('keyup', function() {
+        searchParadas('.parada-' + selectedRouteNumber + ', .parada-0');
+    });
+
+    $('#searchUbicaciones').on('keyup', function() {
+        searchUbicaciones('.ruta-' + selectedRouteNumber);
+    });
+
+    document.getElementById('crearNuevo').addEventListener('click', function(e) {
+        e.preventDefault(); // Prevenir la acción por defecto del enlace
+
+        if (selectedRouteNumber === null) {
+            alert("Por favor, selecciona una ruta primero.");
+            return; // No hacer nada si no se ha seleccionado ninguna ruta
+        }
+
+        var url = '@Url.Action("IndexUbicacionesRuta", "Route")' + '?NumRuta=' + selectedRouteNumber;
+
+        window.location.href = url; // Redirigir a la nueva URL
+    });
+
+    </script>
+
+</body>
+</html>

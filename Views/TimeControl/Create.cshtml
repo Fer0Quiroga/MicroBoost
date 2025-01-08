@@ -1,0 +1,294 @@
+﻿@model List<ProyectoControlLineaBus.Models.MuestraControlador>
+@{
+    ViewBag.Title = "Registrar Salida";
+}
+
+<style>
+    .btn-outline-primary,
+    .btn-outline-danger,
+    .btn-outline-warning,
+    .btn-outline-secondary,
+    .btn-outline-info {
+        border-width: 4px;
+        font-weight: bold;
+        color: white;
+    }
+
+    .btn-outline-primary {
+        border-color: rgba(0, 123, 255, 0.7);
+    }
+
+    .btn-outline-danger {
+        border-color: rgba(220, 53, 69, 0.7);
+    }
+
+    .btn-outline-info {
+        border-color: rgba(23, 162, 184, 0.7);
+    }
+
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-outline-info:hover {
+        background-color: #17a2b8;
+        color: white;
+    }
+
+    , .btn-primary, .btn-danger {
+        width: 150px;
+        font-weight: bold;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        font-weight: bold
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        font-weight: bold;
+    }
+
+    .btn-info {
+        background-color: #006a78;
+        border-color: #006a78;
+        font-weight: bold;
+    }
+
+    .btn-warning {
+        background-color: #5c5c00;
+        border-color: #5c5c00;
+        font-weight: bold;
+    }
+    .button-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .placa-container {
+        display: flex;
+        flex-wrap: wrap;
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 0px;
+        justify-content: center;
+    }
+
+    .placa-box {
+        width: calc(33.33% - 20px);
+        max-width: 140px;
+        margin: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.2s;
+        background-color: #fff;
+        flex: 1 0 calc(33.33% - 20px);
+    }
+
+        .placa-box:hover {
+            transform: scale(1.05);
+            border-color: #007bff;
+            background-color: #f0f0f0;
+        }
+
+    .placa-image {
+        width: 60%;
+        height: auto;
+        margin-bottom: 5px;
+    }
+
+    .placa-number {
+        font-weight: bold;
+        color: #000;
+        font-size: 12px;
+    }
+
+    .placa-date {
+        font-size: 12px;
+        font-weight: bold;
+        color: #333;
+        margin-top: 3px;
+    }
+
+    .form-group {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .details-section h3 {
+        margin-bottom: 2px;
+        margin-top: 2px;
+    }
+
+    /* Media Queries para Responsividad */
+    @@media (max-width: 576px) {
+        .placa-box {
+            width: calc(50% - 20px);
+        }
+
+        .placa-number {
+            font-size: 14px;
+        }
+    }
+
+    @@media (min-width: 576px) and (max-width: 768px) {
+        .placa-box {
+            width: calc(33.33% - 20px);
+        }
+
+        .placa-number {
+            font-size: 14px;
+        }
+    }
+
+    @@media (min-width: 768px) and (max-width: 992px) {
+        .placa-box {
+            width: calc(25% - 20px);
+        }
+
+        .placa-number {
+            font-size: 16px;
+        }
+    }
+
+    @@media (min-width: 992px) {
+        .placa-box {
+            width: calc(20% - 20px);
+        }
+
+        .placa-number {
+            font-size: 18px;
+        }
+    }
+
+    @@media (min-width: 1200px) {
+        .placa-box {
+            width: calc(16.66% - 20px);
+        }
+
+        .placa-number {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <meta http-equiv="refresh" content="600">
+</head>
+<div style="margin-top:5%"></div>
+
+<h2 class="text-center">Crear Control</h2>
+
+<!-- Contenedor de botones para alinear "Volver" a la izquierda y "Registrar" centrado -->
+<div class="button-container">
+    <div>
+        @Html.ActionLink("Volver", "OptionsPrincipalControl", "TimeControl", "", new { @class = "btn btn-outline-primary" })
+    </div>
+    <!-- El botón Registrar se oculta inicialmente y se muestra cuando se selecciona una placa -->
+    <div id="registerButtonContainer" style="display: none;">
+        <input type="submit" value="Registrar" class="btn btn-success" onclick="submitForm()" />
+    </div>
+</div>
+
+@using (Html.BeginForm("Create", "TimeControl", FormMethod.Post, new { id = "registerForm" }))
+{
+    <input type="hidden" id="selectedPlateInput" name="plate" value="" />
+
+    <!-- Sección para mostrar detalles de la placa -->
+    <div id="detailsSection" style="display:none;">
+        <h4>Número de Placa: <span id="selectedPlate"></span></h4>
+        <p id="currentBoliviaTime" style="display:none;">Se registrará en: <span></span></p>
+    </div>
+
+    <!-- Contenedor de placas -->
+    <div class="placa-container">
+        @foreach (var item in Model)
+        {
+            <div class="placa-box" onclick="showDetails('@item.plate', this)">
+                <img src="~/images/bus.png" class="placa-image" alt="Bus Image" />
+                <div class="placa-number">@item.plate</div>
+                <div class="placa-date" id="currentDate_@item.plate" style="display:none;">
+                    <!-- Aquí se mostrará la fecha y hora actual cuando se haga clic -->
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function showDetails(plate) {
+            // Ocultar la fecha de todos los elementos antes de mostrar la nueva
+            $('.placa-date').hide();
+
+            var selected = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(m => new {
+                m.plate
+            })));
+            var detalles = selected.find(x => x.plate === plate);
+
+            if (!detalles) {
+                $('#detailsSection').hide();
+                $('#registerButtonContainer').hide();
+                return;
+            }
+
+            // Obtén la fecha actual en Bolivia
+            var boliviaTimeZone = 'America/La_Paz';
+            var now = new Date();
+            var boliviaTime = new Date(now.toLocaleString("en-US", { timeZone: boliviaTimeZone }));
+
+            // Formatea la fecha y hora
+            var formattedDate = boliviaTime.toLocaleDateString('es-ES') + ' ' + boliviaTime.toLocaleTimeString('es-ES');
+
+            // Muestra la fecha y hora actual de Bolivia debajo del número de placa
+            $('#selectedPlate').text(plate);
+            $('#selectedPlateInput').val(plate);
+            $('#currentBoliviaTime span').text(formattedDate);
+            $('#currentBoliviaTime').show();
+
+            // Mostrar la fecha y hora actual debajo de la imagen y placa seleccionada
+            $('#currentDate_' + plate).text(formattedDate).show();
+
+            $('#detailsSection').show();
+            $('#registerButtonContainer').show(); // Mostrar el botón de registrar
+        }
+
+        function submitForm() {
+            $('#registerForm').submit();
+        }
+    </script>
+}

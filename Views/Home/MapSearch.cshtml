@@ -1,0 +1,47 @@
+﻿@model IEnumerable<ProyectoControlLineaBus.Models.Line>
+
+@{
+    ViewBag.Title = "Buscador";
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+</head>
+<div style="margin-top:5%"></div>
+<h2 class="text-center">Líneas con esas indicaciones</h2>
+
+<table class="table text-center text-white">
+    <tr>
+        <th style="text-align:center">
+            Línea
+        </th>
+        <th style="text-align:center">
+            Datos
+        </th>
+        <th style="text-align:center">
+
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.nameLine)
+            </td>
+            <td>
+                El precio es: @Html.DisplayFor(modelItem => item.price) BOB.
+
+                - @Html.DisplayFor(modelItem => item.description)
+            </td>
+            <td>
+                @Html.ActionLink("Ver", "ViewLine", new { nameLine = item.nameLine }, new { @class = "btn btn-info text-white" })
+            </td>
+        </tr>
+    }
+
+</table>

@@ -1,0 +1,460 @@
+﻿@model IEnumerable<ProyectoControlLineaBus.Models.MuestraEmployee>
+
+@{
+    ViewBag.Title = "Menú Empleados";
+}
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <title>Menú de Empleados</title>
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            font-weight:bold
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            font-weight: bold;
+        }
+        .btn-info {
+            background-color: #006a78;
+            border-color: #006a78;
+            font-weight: bold;
+        }
+        .btn-warning {
+            background-color: #5c5c00;
+            border-color: #5c5c00;
+            font-weight: bold;
+        }
+        .modal-custom {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content-custom, .modal-content {
+            background-color: #242943;
+            color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-header {
+            border-bottom: none;
+        }
+
+        .modal-footer {
+            border-top: none;
+            justify-content: center;
+        }
+
+        .close-custom, .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: white;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        .dropdown-item {
+            color: black !important;
+            font-weight: bold !important;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+        #fallaMecanica {
+            font-weight: bold;
+        }
+
+            #fallaMecanica option {
+                font-weight: bold;
+            }
+        .dropdown-item:hover {
+            background-color: #343a40;
+            color: white !important;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #343a40; 
+            color: white;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        .table th, .table td {
+            padding: 10px; 
+        }
+
+        .table th, .table td {
+            word-wrap: break-word;
+        }
+
+
+
+    </style>
+</head>
+
+<body>
+    <div style="margin-top:5%"></div>
+
+    <h2 class="text-center">Empleados</h2>
+    <div class="row">
+        <div class="col-md-3 mb-2">
+            @Html.ActionLink("Volver", "HomeLine", "Line", "", new { @class = "btn btn-outline-primary" })
+        </div>
+        <div class="col-4 mb-2">
+            @Html.ActionLink("Crear Chofer", "VerificationChofer", "", new { @class = "btn btn-outline-info" })
+        </div>
+        <div class="col-3 mb-2">
+            @Html.ActionLink("Crear Tickeador", "VerificationControl", "", new { @class = "btn btn-outline-info" })
+        </div>
+        <div class="col-md-2 mb-2">
+            @Html.ActionLink("Sanciones", "Index", "Sanction", "", new { @class = "btn btn-outline-primary" })
+        </div>
+    </div>
+
+    <div class="form-outline mb-4" data-mdb-input-init>
+        <input type="search" id="txtBuscar" placeholder="Buscar por nombre" class="form-control" style="font-weight:bold" oninput="filtrarTablas()">
+    </div>
+
+    <h3>Choferes</h3>
+    <table class="table text-center text-white" id="tablaDatos1">
+        <tr>
+            <th style="text-align:center">
+                @Html.DisplayNameFor(model => model.idEmployee)
+            </th>
+            <th style="text-align:center">
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th style="text-align:center">
+                @Html.DisplayNameFor(model => model.plate)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            if (item.idRole == 1)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.idEmployee)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.plate)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Actualizar", "EditChofer", new { id = item.idEmployee }, new { @class = "btn btn-warning text-white mb-2" })
+                        <a href="#" class="btn btn-danger mb-2" onclick="abrirModalEliminarChofer(event, '@item.name', '@item.idEmployee')">Eliminar</a>
+
+                        <!-- Botón "Más..." con Submenú -->
+                        <div class="dropdown d-inline">
+                            <button class="btn btn-outline-secondary dropdown-toggle mb-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Más...
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#" onclick="abrirModalFallas(event, '@item.plate')">Aumentar Falla mecánica</a>
+                                @Html.ActionLink("Mostrar Informe de Fallas Mecanicas", "ReportFallasMecanicas", "NewReport", new { plate = item.plate }, new { @class = "dropdown-item" })
+
+                                @Html.ActionLink("Mostrar Reportes de Pasajeros", "ReportChofer", "NewReport", new { id = item.idEmployee }, new { @class = "dropdown-item" })
+                                @Html.ActionLink("Mostrar Reportes de Observaciones", "ReportIncidenciasChofer", "NewReport", new { id = item.idEmployee }, new { @class = "dropdown-item" })
+                                @Html.ActionLink("Mostrar Vueltas", "ReportVueltasChoferDiario", "NewReport", new { idEmployee = item.idEmployee }, new { @class = "dropdown-item" })
+                                @Html.ActionLink("Ver Sanciones", "VerSanciones", "Sanction", new { id = item.idEmployee }, new { @class = "dropdown-item" })
+                                @Html.ActionLink("Generar QR", "PrintQRDiver", "Employee", new { placa = item.plate }, new { @class = "dropdown-item" })
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+
+    <h3>Tickeadores</h3>
+    <table class="table text-center text-white" id="tablaDatos2">
+        <tr>
+            <th style="text-align:center">
+                @Html.DisplayNameFor(model => model.idEmployee)
+            </th>
+            <th style="text-align:center">
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th style="text-align:center">
+                @Html.DisplayNameFor(model => model.salary)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            if (item.idRole == 2)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.idEmployee)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.salary)
+                    </td>
+                    <td class="text-lg-start">
+                        @if (item.description.Trim() == "")
+                        {
+                            @Html.ActionLink("Agregar Parada", "AddCheckpoint", new { id = item.idEmployee }, new { @class = "btn btn-info mb-2" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Mostrar Paradas", "ListChecksEmployee", "Checkpoint", new { id = item.idEmployee }, new { @class = "btn btn-info mb-2" })
+                        }
+                        @Html.ActionLink("Actualizar", "EditControlador", new { id = item.idEmployee }, new { @class = "btn btn-warning text-white mb-2" })
+                        <a href="#" class="btn btn-danger mb-2" onclick="abrirModalEliminarControlador(event, '@item.name', '@item.idEmployee')">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+
+    <div id="modal-fallas" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalFallasLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalFallasLabel">Aumentar Falla Mecánica</h5>
+                    <button type="button" class="close" onclick="cerrarModal('modal-fallas')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Placa del vehículo: <label id="vehiclePlate"></label></p>
+                    <label for="fallaMecanica">Seleccione la falla mecánica:</label>
+                    <select id="fallaMecanica" class="form-control mb-4">
+                        <option value="Falla del sistema de carga">Falla del sistema de carga</option>
+                        <option value="Falla en el sistema de combustible">Falla en el sistema de combustible</option>
+                        <option value="Falla en el sistema de enfriamiento">Falla en el sistema de enfriamiento</option>
+                        <option value="Falla del sistema de lubricación">Falla del sistema de lubricación</option>
+                        <option value="Falla en el sistema de control del motor (ECU)">Falla en el sistema de control del motor (ECU)</option>
+                        <option value="Falla en los rodamientos de las ruedas">Falla en los rodamientos de las ruedas</option>
+                        <option value="Falla en el sistema de escape de frenos">Falla en el sistema de escape de frenos</option>
+                        <option value="Falla en el sistema de arranque">Falla en el sistema de arranque</option>
+                        <option value="Falla en el sistema de tracción total (AWD/4WD)">Falla en el sistema de tracción total (AWD/4WD)</option>
+                        <option value="Falla de motor">Falla de motor</option>
+                        <option value="Falla de llantas">Falla de llantas</option>
+                        <option value="Falla de transmisión">Falla de transmisión</option>
+                        <option value="Falla de frenos">Falla de frenos</option>
+                        <option value="Falla del sistema eléctrico">Falla del sistema eléctrico</option>
+                        <option value="Falla de suspensión">Falla de suspensión</option>
+                        <option value="Falla del sistema de dirección">Falla del sistema de dirección</option>
+                        <option value="Falla de escape">Falla de escape</option>
+                        <option value="Falla del sistema de climatización">Falla del sistema de climatización</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-fallas')">CANCELAR</button>
+                    <button type="button" class="btn btn-primary" onclick="enviarReporte()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-eliminacionChofer" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalEliminarChoferLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEliminarChoferLabel">¿Estás seguro?</h5>
+                    <button type="button" class="close" onclick="cerrarModal('modal-eliminacionChofer')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Se eliminará el siguiente chofer: <label id="nameChofer"></label></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-eliminacionChofer')">CANCELAR</button>
+                    <a id="confirmDeleteChofer" href="#" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-eliminacionControlador" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalEliminarControladorLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEliminarControladorLabel">¿Estás seguro?</h5>
+                    <button type="button" class="close" onclick="cerrarModal('modal-eliminacionControlador')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Se eliminará el siguiente controlador: <label id="nameControlador"></label></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-eliminacionControlador')">CANCELAR</button>
+                    <a id="confirmDeleteControlador" href="#" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirModalEliminarChofer(event, name, idEmployee) {
+            event.preventDefault();
+            document.getElementById('nameChofer').innerText = name;
+            document.getElementById('confirmDeleteChofer').setAttribute('href', '@Url.Action("DeleteChofer", "Employee")/' + idEmployee);
+            $('#modal-eliminacionChofer').modal('show');
+        }
+
+        function abrirModalEliminarControlador(event, name, idEmployee) {
+            event.preventDefault();
+            document.getElementById('nameControlador').innerText = name;
+            document.getElementById('confirmDeleteControlador').setAttribute('href', '@Url.Action("DeleteControlador", "Employee")/' + idEmployee);
+            $('#modal-eliminacionControlador').modal('show');
+        }
+
+        function abrirModalFallas(event, plate) {
+            event.preventDefault();
+            document.getElementById('vehiclePlate').innerText = plate;
+            $('#modal-fallas').modal('show');
+        }
+
+        function cerrarModal(idModal) {
+            $('#' + idModal).modal('hide');
+        }
+
+        function enviarReporte() {
+            var plate = document.getElementById('vehiclePlate').innerText;
+            var description = document.getElementById('fallaMecanica').value;
+            cerrarModal('modal-fallas');
+            setTimeout(function () {
+                const url = `@Url.Action("reportBusMechanicalFailures", "Chofer")?plate=${plate}&description=${description}`;
+                window.location.href = url;
+            }, 2000);
+        }
+
+        function filtrarTablas() {
+            var input, filter, table, tr, tdNit, tdNombre, i, txtValueNit, txtValueNombre;
+
+            input = document.getElementById("txtBuscar");
+            filter = input.value.toUpperCase();
+
+            ["tablaDatos1", "tablaDatos2"].forEach(function (tablaId) {
+                table = document.getElementById(tablaId);
+                tr = table.getElementsByTagName("tr");
+
+                for (i = 0; i < tr.length; i++) {
+                    tdNit = tr[i].getElementsByTagName("td")[0];
+                    tdNombre = tr[i].getElementsByTagName("td")[1];
+
+                    if (tdNit && tdNombre) {
+                        txtValueNit = tdNit.textContent || tdNit.innerText;
+                        txtValueNombre = tdNombre.textContent || tdNombre.innerText;
+
+                        if (
+                            txtValueNit.toUpperCase().includes(filter) ||
+                            txtValueNombre.toUpperCase().includes(filter) ||
+                            (txtValueNit + " " + txtValueNombre).toUpperCase().includes(filter)
+                        ) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>

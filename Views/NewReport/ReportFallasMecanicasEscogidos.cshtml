@@ -1,0 +1,70 @@
+﻿@model List<ProyectoControlLineaBus.Models.MostrarFallasMecanicas>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Reporte de Fallas Mecánicas</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+</head>
+<body>
+    <div class="text-center">
+        <h2 class="text-center">Reporte de Fallas Mecánicas @ViewBag.plate @ViewBag.CurrentYear</h2>
+        <table border="1" class="table">
+            <thead>
+                <tr>
+                    <th>Fallas</th>
+                    <th>Fecha de Falla</th>
+                </tr>
+            </thead>
+            <tbody id="fallasTable" style="">
+                @foreach (var item in Model)
+                {
+                    <tr data-month="@item.fechaFalla.Month" data-year="@item.fechaFalla.Year">
+                        <td>@item.fallas</td>
+                        <td>@item.fechaFalla.ToString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    
+
+    <script>$(document).ready(function () {
+            $('#month, #year').on('change', function () {
+                filterTable();
+            });
+
+            function filterTable() {
+                var selectedMonth = parseInt($('#month').val());
+                var selectedYear = parseInt($('#year').val());
+
+                // Iterar sobre cada fila de la tabla
+                $('#fallasTable tr').each(function () {
+                    var rowMonth = parseInt($(this).data('month'));
+                    var rowYear = parseInt($(this).data('year'));
+
+                    // Mostrar/ocultar fila según los filtros
+                    if ((selectedMonth === rowMonth || isNaN(selectedMonth)) &&
+                        (selectedYear === rowYear || isNaN(selectedYear))) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Inicializar el filtro al cargar la página
+            filterTable();
+        });</script>
+</body>
+</html>

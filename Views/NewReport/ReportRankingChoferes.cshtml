@@ -1,0 +1,184 @@
+﻿@model List<ProyectoControlLineaBus.Models.ChoferRanking>
+
+<head>
+    <title class="text-center">Rank Choferes</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-success,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            font-weight: bold;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-primary {
+            font-weight: bold;
+            background-color: rgba(0, 123, 255, 0.7);
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+        table {
+            border-collapse: collapse;
+            width: 60%;
+            margin: 0 auto;
+            background-color: #333;
+            text-align: center;
+        }
+
+        thead th {
+            text-align: center; 
+            font-weight: bold;
+            color: white;
+            padding: 15px; 
+        }
+
+        th, td {
+            border: none;
+            padding: 15px;
+            text-align: center; 
+        }
+
+        th, td {
+            font-weight: bold;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #444;
+        }
+
+        #rankingSelector {
+            margin-bottom: 2%;
+            width:50%;
+        }
+    </style>
+</head>
+
+<h2 style="text-align:center; margin-top:2%">Ranking de Choferes</h2>
+<div class="row">
+    <div class="col-md-10">
+        <label for="rankingSelector">Selecciona el ranking:</label>
+        <select id="rankingSelector" onchange="filterRanking()">
+            <option value="1">Ranking de este mes</option>
+            <option value="2">Ranking del mes anterior</option>
+        </select>
+    </div>
+    <div class="col-md-1 mb-2">
+        @Html.ActionLink("Volver", "HomeLine", "Line", "", new { @class = "btn btn-outline-primary" })
+    </div>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Chofer</th>
+            <th>Vueltas</th>
+        </tr>
+    </thead>
+    <tbody id="rankingBody">
+        @{ int rank = 1; }
+        @foreach (var chofer in Model.Where(x => x.status == 1).Take(10))
+        {
+            <tr class="rank-1">
+                <td>@rank</td>
+                <td>@chofer.idEmployee</td>
+                <td>@chofer.vueltas</td>
+            </tr>
+            rank++;
+        }
+
+        @{ rank = 1; } 
+        @foreach (var chofer in Model.Where(x => x.status == 2).Take(10))
+        {
+            <tr class="rank-2" style="display:none">
+                <td>@rank</td>
+                <td>@chofer.idEmployee</td>
+                <td>@chofer.vueltas</td>
+            </tr>
+            rank++;
+        }
+    </tbody>
+</table>
+
+<script>
+    function filterRanking() {
+        var selectedValue = document.getElementById("rankingSelector").value;
+        if (selectedValue == "1") {
+            document.querySelectorAll('.rank-1').forEach(row => row.style.display = "");
+            document.querySelectorAll('.rank-2').forEach(row => row.style.display = "none");
+        } else {
+            document.querySelectorAll('.rank-1').forEach(row => row.style.display = "none");
+            document.querySelectorAll('.rank-2').forEach(row => row.style.display = "");
+        }
+    }
+</script>

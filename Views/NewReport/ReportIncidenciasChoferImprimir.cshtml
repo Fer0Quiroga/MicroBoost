@@ -1,0 +1,36 @@
+﻿@model List<ProyectoControlLineaBus.Models.ChoferObservaciones>
+@{ 
+    Layout = null;
+}
+<head>
+    <title class="text-center">Incidencias del Chofer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+</head>
+
+<h2 style="text-align:center;margin-top:5%;">Observaciones del Chofer</h2>
+
+<table class="table" border="1">
+    <thead>
+        <tr>
+            <th class="fecha-columna">Fecha</th>
+            <th>Observación</th>
+        </tr>
+    </thead>
+    <tbody id="observacionesBody">
+        @foreach (var observacion in Model)
+        {
+            <tr>
+                <td class="fecha-columna">@observacion.fechaObservacion.ToString("dd/MM/yyyy")</td>
+                <td>@observacion.observacion</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

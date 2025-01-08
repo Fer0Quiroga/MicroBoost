@@ -1,0 +1,139 @@
+﻿@model ProyectoControlLineaBus.Models.MuestraCheckpoint
+
+@{
+    ViewBag.Title = "Puntos de Control";
+}
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+</head>
+<div style="margin-top:5%"></div>
+<body>
+
+    <h2 class="text-center">Puntos de Control</h2>
+    <div class="row">
+        <div class="col-md-1 mb-2">
+            @Html.ActionLink("Volver", "HomeLine", "Line", "", new { @class = "btn btn-outline-primary" })
+        </div>
+        <div class="col-md-3  mb-2">
+            @Html.ActionLink("Crear Nuevo", "Create", "", new { @class = "btn btn-info" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table text-center text-white">
+                <tr>
+                    <th style="text-align:center">
+                        Lugar del punto de Control
+                    </th>
+                </tr>
+
+                @foreach (var item in Model.checkpoints)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.description)
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#confirmationModal" data-id="@item.idCheckpoint" data-description="@item.description">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+        <div class="col-md-6">
+            @if ((Model.IntermediatePoints != null || Model.IntermediateCheckpoints != null) && Model.EndPoint != null && Model.StartPoint != null)
+            {
+                <div id="map" style="width: auto; height: 400px; margin: 0 auto;"></div>
+                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                <script>
+            // Define las coordenadas de inicio y destino
+        var startPoint0 = @double.Parse(@Model.StartPoint[0].ToString())
+        var startPoint1 = @double.Parse(@Model.StartPoint[1].ToString())
+        var endPoint0 = @double.Parse(@Model.EndPoint[0].ToString());
+        var endPoint1 = @double.Parse(@Model.EndPoint[1].ToString());
+        // Configura el mapa
+        var mymap = L.map('map').setView([startPoint0, startPoint1], 15);
+
+        // Agrega una capa de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(mymap);
+
+
+
+        // Define los puntos intermedios
+            var intermediatePoints = [
+                [startPoint0, startPoint1],
+            @foreach (var point in Model.IntermediatePoints)
+            {
+                @:[@point[0],@point[1]],
+            }
+                [endPoint0, endPoint1]
+        ];
+
+        // Crea una ruta con puntos intermedios
+                L.polyline(intermediatePoints, { color: 'blue' }).addTo(mymap);
+            var intermediateCheckpoint = [
+            @foreach (var point in Model.IntermediateCheckpoints)
+            {
+                @:[@double.Parse(point[0]),@double.Parse(point[1]), '@point[2]'],
+            }
+            ];
+                for (const coord of intermediateCheckpoint) {
+                    const  latitud = coord[0];
+                    const longitud = coord[1];
+                    const label = coord[2];
+                    var marker = L.marker([latitud, longitud]).addTo(mymap);
+                    marker.bindPopup(label);
+                }
+            // Ajusta el mapa para que la vista muestre toda la ruta
+            mymap.fitBounds(intermediatePoints);
+                </script>
+            }
+        </div>
+    </div>
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="color:black" id="confirmationModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" style="color:black" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="color:black">
+                    ¿Estás seguro de que deseas eliminar el checkpoint?: <p><span id="checkpointDescription"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a id="confirmDelete" href="#" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    $('#confirmationModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var description = button.data('description');
+        var modal = $(this);
+        modal.find('#checkpointDescription').text(description);
+        modal.find('#confirmDelete').attr('href', '@Url.Action("Delete", "Checkpoint")/' + button.data('id'));
+    });
+    </script>
+
+
+</body>
+

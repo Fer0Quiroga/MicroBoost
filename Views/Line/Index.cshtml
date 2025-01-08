@@ -1,0 +1,245 @@
+﻿@model IEnumerable<ProyectoControlLineaBus.Models.Line>
+
+@{
+    ViewBag.Title = "Líneas";
+}
+
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <title>Administrar Lineas</title>
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            font-weight: bold
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            font-weight: bold;
+        }
+
+        .btn-info {
+            background-color: #006a78;
+            border-color: #006a78;
+            font-weight: bold;
+        }
+
+        .btn-warning {
+            background-color: #5c5c00;
+            border-color: #5c5c00;
+            font-weight: bold;
+        }
+
+        .dropdown-item {
+            color: black !important;
+            font-weight: bold !important;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        #fallaMecanica {
+            font-weight: bold;
+        }
+
+            #fallaMecanica option {
+                font-weight: bold;
+            }
+
+        .dropdown-item:hover {
+            background-color: #343a40;
+            color: white !important;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #343a40;
+            color: white;
+        }
+
+        table {
+            width: 90%;
+        }
+
+        .table th, .table td {
+            padding: 10px;
+        }
+
+        .table th, .table td {
+            word-wrap: break-word;
+        }
+
+
+    </style>
+</head>
+<div style="margin-top:3%"></div>
+<body>
+    <h2 class="text-center">Líneas</h2>
+    <div class="row">
+        <div class="col-md-2 mb-3">
+            @Html.ActionLink("Crear Línea", "Create", "", new { @class = "btn btn-outline-primary" })
+        </div>
+        <div class="col-md-3">
+            @Html.ActionLink("Administrar Gestores", "Index", "Admin","", new { @class = "btn btn-outline-info" })
+        </div>
+    </div>
+
+    <input type="text" id="txtBuscar" placeholder="Buscar por nombre" oninput="filtrarTabla()" />
+    <table class="table text-center text-white mt-3" id="tablaDatos">
+        <tr class="text-center" >
+            <th style="text-align: center;">
+                Nombre de Línea
+            </th>
+            <th style="text-align:center">
+                Gestor
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nameLine)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.description)
+                </td>
+                <td>
+                    @if (item.idAdmin == null)
+                    {
+                        @: @Html.ActionLink("Asignar Gestor", "AsignarGestor", "Admin", new { nameLine = item.nameLine }, new { @class = "btn btn-info text-white mb-2" })
+                    }
+                    else
+                    {
+                        @: @Html.ActionLink("Quitar Gestor", "QuitarGestor","Admin", new { nameLine = item.nameLine }, new { @class = "btn btn-warning text-white mb-2" })
+                    }
+                    @* @Html.ActionLink("Dueños", "Index", "Owner", new { id = item.nameLine }, new { @class = "btn btn-warning mb-2 text-white" })*@
+                    <a href="#" class="btn btn-danger mb-2" data-toggle="modal" data-target="#lineaModal" data-id="@item.nameLine" data-description="@item.nameLine">Eliminar</a>
+                </td>
+</tr>
+        }
+
+    </table>
+    <div class="modal fade" id="lineaModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="color:black" id="confirmationModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" class="close" style="color:black" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="color:black">
+                    ¿Estás seguro de que deseas eliminar esta linea?
+                    <p><span id="description"></span> </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a id="confirmDelete" href="#" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#lineaModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var description = button.data('description');
+        var modal = $(this);
+        modal.find('#description').text(description);
+        modal.find('#confirmDelete').attr('href', '@Url.Action("Delete", "Line")/' + button.data('id'));
+        });
+    </script>
+    <script>
+        function filtrarTabla() {
+            var input, filter, table, tr, tdNombre, i, txtValueNombre;
+
+            input = document.getElementById("txtBuscar");
+            filter = input.value.toUpperCase();
+
+            table = document.getElementById("tablaDatos");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                tdNombre = tr[i].getElementsByTagName("td")[0];
+
+                if (tdNombre) {
+                    txtValueNombre = tdNombre.textContent || tdNombre.innerText;
+
+                    if (txtValueNombre.toUpperCase().includes(filter)) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>

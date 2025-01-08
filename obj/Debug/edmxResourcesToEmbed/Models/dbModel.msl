@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="MicroBusPModelStoreContainer" CdmEntityContainer="dbModels">
+    <EntitySetMapping Name="Checkpoint">
+      <EntityTypeMapping TypeName="MicroBusPModel.Checkpoint">
+        <MappingFragment StoreEntitySet="Checkpoint">
+          <ScalarProperty Name="idCheckpoint" ColumnName="idCheckpoint" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="idLine" ColumnName="idLine" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="idEmployee" ColumnName="idEmployee" />
+          <ScalarProperty Name="latitud" ColumnName="latitud" />
+          <ScalarProperty Name="longitud" ColumnName="longitud" />
+          <ScalarProperty Name="numberRoute" ColumnName="numberRoute" />
+          <ScalarProperty Name="minArrival" ColumnName="minArrival" />
+          <ScalarProperty Name="minArrivalMarket" ColumnName="minArrivalMarket" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DeviationRote">
+      <EntityTypeMapping TypeName="MicroBusPModel.DeviationRote">
+        <MappingFragment StoreEntitySet="DeviationRote">
+          <ScalarProperty Name="idDeviation" ColumnName="idDeviation" />
+          <ScalarProperty Name="idRouteStart" ColumnName="idRouteStart" />
+          <ScalarProperty Name="idRouteEnd" ColumnName="idRouteEnd" />
+          <ScalarProperty Name="numberRoute" ColumnName="numberRoute" />
+          <ScalarProperty Name="idLine" ColumnName="idLine" />
+          <ScalarProperty Name="numTypeRoute" ColumnName="numTypeRoute" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Employee">
+      <EntityTypeMapping TypeName="MicroBusPModel.Employee">
+        <MappingFragment StoreEntitySet="Employee">
+          <ScalarProperty Name="idEmployee" ColumnName="idEmployee" />
+          <ScalarProperty Name="salary" ColumnName="salary" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="dateRegister" ColumnName="dateRegister" />
+          <ScalarProperty Name="plate" ColumnName="plate" />
+          <ScalarProperty Name="idLine" ColumnName="idLine" />
+          <ScalarProperty Name="enabled" ColumnName="enabled" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Line">
+      <EntityTypeMapping TypeName="MicroBusPModel.Line">
+        <MappingFragment StoreEntitySet="Line">
+          <ScalarProperty Name="nameLine" ColumnName="nameLine" />
+          <ScalarProperty Name="price" ColumnName="price" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="idAdmin" ColumnName="idAdmin" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MechanicalFailures">
+      <EntityTypeMapping TypeName="MicroBusPModel.MechanicalFailures">
+        <MappingFragment StoreEntitySet="MechanicalFailures">
+          <ScalarProperty Name="idMechanicalFailutes" ColumnName="idMechanicalFailutes" />
+          <ScalarProperty Name="plate" ColumnName="plate" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="idEmployee" ColumnName="idEmployee" />
+          <ScalarProperty Name="dateRegister" ColumnName="dateRegister" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Owner">
+      <EntityTypeMapping TypeName="MicroBusPModel.Owner">
+        <MappingFragment StoreEntitySet="Owner">
+          <ScalarProperty Name="idLine" ColumnName="idLine" />
+          <ScalarProperty Name="idPerson" ColumnName="idPerson" />
+          <ScalarProperty Name="doc" ColumnName="doc" />
+          <ScalarProperty Name="idOwner" ColumnName="idOwner" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Person">
+      <EntityTypeMapping TypeName="MicroBusPModel.Person">
+        <MappingFragment StoreEntitySet="Person">
+          <ScalarProperty Name="nit" ColumnName="nit" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="lastname" ColumnName="lastname" />
+          <ScalarProperty Name="phone" ColumnName="phone" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="dateRegister" ColumnName="dateRegister" />
+          <ScalarProperty Name="idRole" ColumnName="idRole" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Place">
+      <EntityTypeMapping TypeName="MicroBusPModel.Place">
+        <MappingFragment StoreEntitySet="Place">
+          <ScalarProperty Name="idPlace" ColumnName="idPlace" />
+          <ScalarProperty Name="description" ColumnName="description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Report">
+      <EntityTypeMapping TypeName="MicroBusPModel.Report">
+        <MappingFragment StoreEntitySet="Report">
+          <ScalarProperty Name="idReport" ColumnName="idReport" />
+          <ScalarProperty Name="idEmployee" ColumnName="idEmployee" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="dateRegister" ColumnName="dateRegister" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Route">
+      <EntityTypeMapping TypeName="MicroBusPModel.Route">
+        <MappingFragment StoreEntitySet="Route">
+          <ScalarProperty Name="idLine" ColumnName="idLine" />
+          <ScalarProperty Name="idPlace" ColumnName="idPlace" />
+          <ScalarProperty Name="idRoute" ColumnName="idRoute" />
+          <ScalarProperty Name="latitud" ColumnName="latitud" />
+          <ScalarProperty Name="logintud" ColumnName="logintud" />
+          <ScalarProperty Name="numberRoute" ColumnName="numberRoute" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="numPoint" ColumnName="numPoint" />
+          <ScalarProperty Name="numTypeRoute" ColumnName="numTypeRoute" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Sanction">
+      <EntityTypeMapping TypeName="MicroBusPModel.Sanction">
+        <MappingFragment StoreEntitySet="Sanction">
+          <ScalarProperty Name="idSanction" ColumnName="idSanction" />
+          <ScalarProperty Name="title" ColumnName="title" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="idLine" ColumnName="idLine" />
+          <ScalarProperty Name="status" ColumnName="status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SanctionEmployee">
+      <EntityTypeMapping TypeName="MicroBusPModel.SanctionEmployee">
+        <MappingFragment StoreEntitySet="SanctionEmployee">
+          <ScalarProperty Name="idSanctionEmployee" ColumnName="idSanctionEmployee" />
+          <ScalarProperty Name="idSanction" ColumnName="idSanction" />
+          <ScalarProperty Name="idEmployee" ColumnName="idEmployee" />
+          <ScalarProperty Name="dateRegister" ColumnName="dateRegister" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Star">
+      <EntityTypeMapping TypeName="MicroBusPModel.Star">
+        <MappingFragment StoreEntitySet="Star">
+          <ScalarProperty Name="idStar" ColumnName="idStar" />
+          <ScalarProperty Name="idEmployee" ColumnName="idEmployee" />
+          <ScalarProperty Name="numStar" ColumnName="numStar" />
+          <ScalarProperty Name="dateRegister" ColumnName="dateRegister" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sysdiagrams">
+      <EntityTypeMapping TypeName="MicroBusPModel.sysdiagrams">
+        <MappingFragment StoreEntitySet="sysdiagrams">
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="definition" ColumnName="definition" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TimeControl">
+      <EntityTypeMapping TypeName="MicroBusPModel.TimeControl">
+        <MappingFragment StoreEntitySet="TimeControl">
+          <ScalarProperty Name="idTimeControl" ColumnName="idTimeControl" />
+          <ScalarProperty Name="idEmployee" ColumnName="idEmployee" />
+          <ScalarProperty Name="idCheckpoint" ColumnName="idCheckpoint" />
+          <ScalarProperty Name="dateRegister" ColumnName="dateRegister" />
+          <ScalarProperty Name="plate" ColumnName="plate" />
+          <ScalarProperty Name="enable" ColumnName="enable" />
+          <ScalarProperty Name="numTicket" ColumnName="numTicket" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="User">
+      <EntityTypeMapping TypeName="MicroBusPModel.User">
+        <MappingFragment StoreEntitySet="User">
+          <ScalarProperty Name="idEmployee" ColumnName="idEmployee" />
+          <ScalarProperty Name="username" ColumnName="username" />
+          <ScalarProperty Name="password" ColumnName="password" />
+          <ScalarProperty Name="firstEntry" ColumnName="firstEntry" />
+          <ScalarProperty Name="email" ColumnName="email" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="prcCreateChofer" FunctionName="MicroBusPModel.Store.prcCreateChofer" />
+    <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="MicroBusPModel.Store.sp_alterdiagram" />
+    <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="MicroBusPModel.Store.sp_creatediagram" />
+    <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="MicroBusPModel.Store.sp_dropdiagram" />
+    <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="MicroBusPModel.Store.sp_helpdiagramdefinition">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MicroBusPModel.sp_helpdiagramdefinition_Result">
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="definition" ColumnName="definition" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="MicroBusPModel.Store.sp_helpdiagrams">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MicroBusPModel.sp_helpdiagrams_Result">
+          <ScalarProperty Name="Database" ColumnName="Database" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Owner" ColumnName="Owner" />
+          <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="MicroBusPModel.Store.sp_renamediagram" />
+    <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="MicroBusPModel.Store.sp_upgraddiagrams" />
+    <FunctionImportMapping FunctionImportName="UltCheckpoint" FunctionName="MicroBusPModel.Store.UltCheckpoint">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MicroBusPModel.UltCheckpoint_Result">
+          <ScalarProperty Name="idEmployee" ColumnName="idEmployee" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="idCheckpoint" ColumnName="idCheckpoint" />
+          <ScalarProperty Name="dateRegister" ColumnName="dateRegister" />
+          <ScalarProperty Name="status" ColumnName="status" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+  </EntityContainerMapping>
+</Mapping>

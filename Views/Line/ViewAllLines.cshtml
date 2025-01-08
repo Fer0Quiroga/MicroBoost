@@ -1,0 +1,295 @@
+﻿@model List<ProyectoControlLineaBus.Models.MuestraTodasLineas>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>@ViewBag.Title</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <style>
+        #map-container {
+            position: relative;
+            width: 100%;
+            height: 340px;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #custom-image {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 250px;
+            height: 50px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .line-container {
+            display: flex;
+            flex-wrap: wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .line-box {
+            width: calc(20% - 20px);
+            max-width: 90px;
+            margin: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            background-color: #fff;
+        }
+
+            .line-box:hover {
+                transform: scale(1.05);
+                border-color: #007bff;
+                background-color: #f0f0f0;
+            }
+
+        .line-image {
+            width: 50%;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        .line-name {
+            font-weight: bold;
+            color: #000;
+            font-size: 12px;
+            white-space: pre-line;
+        }
+
+        @@media (max-width: 576px) {
+            .line-box {
+                width: calc(50% - 20px);
+                max-width: 100px;
+            }
+        }
+
+        @@media (min-width: 576px) and (max-width: 768px) {
+            .line-box {
+                width: calc(33.33% - 20px);
+            }
+        }
+
+        @@media (min-width: 768px) and (max-width: 992px) {
+            .line-box {
+                width: calc(25% - 20px);
+            }
+        }
+
+        @@media (min-width: 992px) {
+            .line-box {
+                width: calc(20% - 20px);
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="mt-3 text-center">
+        <h3>LÍNEAS Y RUTAS</h3>
+    </div>
+
+    <div id="map-container">
+        <div id="map"></div>
+        <img id="custom-image" src="~/images/INDICACIONES1.png" alt="Icono personalizado" />
+    </div>
+
+    <div class="container mt-1">
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar línea o ruta...">
+    </div>
+
+    <div class="container mt-1 line-container">
+        @foreach (var line in Model)
+        {
+            foreach (var ruta in line.MuestraLin)
+            {
+                {
+                    var parts = line.nameLine.Split(new[] { "Ruta" }, StringSplitOptions.None);
+                    string nombreLinea = parts[0].Trim();
+                    string r = "Ruta:" + parts[1].Trim();
+
+                    if (ruta.NumeroRuta == 1)
+                    {
+                    <div class="line-box" data-name="@line.nameLine - Ida" onclick="showLineRoutes('@line.nameLine', '@ruta.NumeroRuta')">
+                        <img src="~/images/bus.png" class="line-image" alt="Bus Image" />
+                        <div class="line-name ">@nombreLinea<br />@r Ida</div>
+                    </div>
+                    }
+                    else
+                    {
+                    <div class="line-box" data-name="@line.nameLine - Vuelta" onclick="showLineRoutes('@line.nameLine', '@ruta.NumeroRuta')">
+                        <img src="~/images/bus.png" class="line-image" alt="Bus Image" />
+                        <div class="line-name ">@nombreLinea<br />@r Vuelta</div>
+                    </div>
+                    }
+                }
+            }
+        }
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        var allLines = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var map = L.map('map').setView([-17.3935, -66.1570], 15);
+
+            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ', {
+                maxZoom: 19,
+                tileSize: 512,
+                zoomOffset: -1,
+            }).addTo(map);
+
+            var allRoutesGroup = L.featureGroup();
+            var allBlockagesGroup = L.featureGroup();
+
+            function clearMap() {
+                allRoutesGroup.clearLayers();
+                allBlockagesGroup.clearLayers();
+            }
+            var userMarker = null;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(function (position) {
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+
+                    if (userMarker) {
+                        userMarker.setLatLng([lat, lng]);
+                    } else {
+                        userMarker = L.circleMarker([lat, lng], {
+                            color: 'black',
+                            fillColor: 'blue',
+                            fillOpacity: 0.8,
+                            radius: 10
+                        }).addTo(map).bindPopup("Tú estás aquí");
+                    }
+                }, function (error) {
+                    console.error("Error al obtener la ubicación: " + error.message);
+                }, {
+                    enableHighAccuracy: true,
+                    maximumAge: 10000,
+                    timeout: 5000
+                });
+            } else {
+                console.error("Geolocalización no es soportada por este navegador.");
+            }
+
+            window.showLineRoutes = function(lineName, routeNumber) {
+                clearMap();
+
+                var selectedLine = allLines.find(line => line.nameLine === lineName);
+                if (selectedLine) {
+                    var selectedRoute = selectedLine.MuestraLin.find(ruta => ruta.NumeroRuta == routeNumber);
+
+                    if (selectedRoute && selectedRoute.ListRutasMostrar) {
+                        var routePoints = [];
+                        selectedRoute.ListRutasMostrar.forEach(function (ruta) {
+                            routePoints.push([ruta.latitud, ruta.longitud]);
+                        });
+
+                        if (routePoints.length > 0) {
+                            var polyline = L.polyline(routePoints, {
+                                color: 'black',
+                                weight: 7,
+                                opacity: 1,
+                                smoothFactor: 1
+                            }).addTo(allRoutesGroup);
+
+                            var polylineOverlay = L.polyline(routePoints, {
+                                color: '#3388FF',
+                                weight: 5,
+                                opacity: 0.8,
+                                smoothFactor: 1
+                            }).addTo(allRoutesGroup);
+
+                            allRoutesGroup.addTo(map);
+
+                            var startIcon = L.divIcon({
+                                className: 'custom-start-icon',
+                                html: '<div style="background-color: green; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 15]
+                            });
+
+                            var endIcon = L.divIcon({
+                                className: 'custom-end-icon',
+                                html: '<div style="background-color: red; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 15]
+                            });
+
+                            L.marker(routePoints[0], { icon: startIcon }).addTo(allRoutesGroup).bindPopup("Inicio Ruta");
+                            L.marker(routePoints[routePoints.length - 1], { icon: endIcon }).addTo(allRoutesGroup).bindPopup("Fin Ruta");
+
+                            map.fitBounds(polyline.getBounds());
+                        } else {
+                            console.error("No hay puntos para esta ruta.");
+                        }
+
+                        if (selectedRoute.ListBloqueosMostrar) {
+                            selectedRoute.ListBloqueosMostrar.forEach(function(bloqueo) {
+                                if (bloqueo.ListRutasMostrar) {
+                                    var bloqueoPoints = [];
+                                    bloqueo.ListRutasMostrar.forEach(function(bloqueoRoute) {
+                                        bloqueoPoints.push([bloqueoRoute.latitud, bloqueoRoute.longitud]);
+                                    });
+
+                                    if (bloqueoPoints.length > 0) {
+                                        L.polyline(bloqueoPoints, {
+                                            color: 'red',
+                                            weight: 7,
+                                            opacity: 0.9,
+                                            smoothFactor: 1,
+                                            zIndex: 1000
+                                        }).addTo(allBlockagesGroup);
+                                    }
+                                }
+                            });
+                        }
+
+                        map.addLayer(allRoutesGroup);
+                        map.addLayer(allBlockagesGroup);
+                    } else {
+                        console.error("No se encontraron datos para la ruta seleccionada.");
+                    }
+                }
+            }
+
+            $('#searchInput').on('keyup', function () {
+                var searchTerm = $(this).val().toLowerCase();
+                $('.line-box').each(function () {
+                    var lineName = $(this).data('name').toLowerCase();
+                    if (lineName.includes(searchTerm)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

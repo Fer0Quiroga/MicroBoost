@@ -1,0 +1,125 @@
+﻿@model ProyectoControlLineaBus.Models.MuestraSearchMap
+
+@{
+    ViewBag.Title = "ViewLine";
+}
+
+<head>
+    <title class="text-center">@Model.nameLine</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+</head>
+<div style="margin-top:5%"></div>
+<body>
+    <h1 class="text-center">@Model.nameLine</h1>
+    <div class="mb-4 mt-4">
+        <div class="row mx-auto">
+            <div class="col-7 text-left">
+                @Model.description
+            </div>
+            <div class="col-4">
+                <div>
+                    <b>Precio BOB:</b> @Model.price
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            @if ((Model.IntermediatePoints != null || Model.IntermediateCheckpoints != null) && (Model.EndPoint != null && Model.StartPoint != null))
+            {
+                <div id="map" style="width: auto; height: 300px; margin:  auto;"></div>
+                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                <script>
+            // Coordenadas de inicio y destino
+        var startPoint0 = @double.Parse(@Model.StartPoint[0].ToString())
+        var startPoint1 = @double.Parse(@Model.StartPoint[1].ToString())
+        var endPoint0 = @double.Parse(@Model.EndPoint[0].ToString());
+        var endPoint1 = @double.Parse(@Model.EndPoint[1].ToString());
+        // Configura el mapa
+        var mymap = L.map('map').setView([startPoint0, startPoint1], 15);
+
+        //  OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(mymap);
+
+
+
+        // Crear variable para puntos intermedios
+            var intermediatePoints = [
+                [startPoint0, startPoint1],
+            @foreach (var point in Model.IntermediatePoints)
+            {
+                @:[@point[0],@point[1]],
+            }
+                [endPoint0, endPoint1]
+        ];
+
+        // Puntos intermedios traza una línea
+                L.polyline(intermediatePoints, { color: 'blue' }).addTo(mymap);
+            var intermediateCheckpoint = [
+            @foreach (var point in Model.IntermediateCheckpoints)
+            {
+                @:[@double.Parse(point[0]),@double.Parse(point[1]), '@point[2]'],
+            }
+            ];
+                for (const coord of intermediateCheckpoint) {
+                    const  latitud = coord[0];
+                    const longitud = coord[1];
+                    const label = coord[2];
+                    var marker = L.marker([latitud, longitud]).addTo(mymap);
+                    marker.bindPopup(label);
+                }
+            // Ajusta el mapa para que la vista muestre toda la ruta
+            mymap.fitBounds(intermediatePoints);
+                </script>
+            }
+        </div>
+        <div class="col-md-6">
+            <table class="table text-white">
+                @foreach (var item in Model.NameCheckpoint)
+                {
+                    <tr>
+                        <th >
+                            @Html.DisplayFor(modelItem => item[1])
+                        </th>
+                        <th >
+                            
+                        </th>
+                    </tr>
+                    foreach (var item2 in Model.ultCheckpoints)
+                    {
+                        if (item2.idCheckpoint == int.Parse(item[0]))
+                        {
+                            <tr>
+                                <td style="text-align:right">
+                                    <span id="dateMin_@item2.idCheckpoint">@item2.name pasó hace</span>
+                                </td>
+                                <td>
+                                    <span id="dateMin_@item2.idCheckpoint">@item2.dateMin min.</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </table>
+
+        </div>
+    </div>
+    <script>
+        setTimeout(function () {
+            location.reload();
+        }, 300000); // Recarga cada 5 minutos;
+
+    </script>
+</body>
+
+

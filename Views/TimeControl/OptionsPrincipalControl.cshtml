@@ -1,0 +1,66 @@
+﻿
+@model ProyectoControlLineaBus.Models.Place
+@{
+    ViewBag.Title = "Vista Chofer";
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <style>
+        #map {
+            height: 400px; 
+            width: 50%; 
+        }
+
+        .time-fields {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+            .time-fields select {
+                width: 70px; 
+                margin-right: 5px;
+            }
+
+        .colon {
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        .time-label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mt-5 text-center">
+        <h1>BIENVENIDO</h1>
+    </div>
+
+    <div class="inner" style="text-align:center;">
+        <div class=" mt-4 text-center" style="text-align:center;margin-top:1%">
+            <a class="button fit" href="~/TimeControl/Create">LLEGADA</a>
+        </div>
+        <div class=" mt-4 text-center" style="text-align:center;margin-top:1%">
+            <a class="button fit" href="~/TimeControl/SalidaCreate">SALIDA</a>
+        </div>
+        <div>
+            <br /><p class="text-center">@ViewBag.HomeMensaje</p>
+        </div>
+    </div>
+
+</body>
+</html>

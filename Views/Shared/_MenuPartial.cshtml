@@ -1,0 +1,35 @@
+﻿@model ProyectoControlLineaBus.Models.LayoutViewModel
+<ul class="links">
+    <li><a href="~/Home/Index">Inicio</a></li>
+    @if (Model.RoleSession != null)
+    {
+        if (Model.RoleSession.ToString() == "4")
+        {
+            @*<li><a href="~/Person/Index">Gestión de Dueños</a></li>*@
+            @*<li><a href="~/Line/Index">Gestión de Líneas</a></li>*@
+            @*<li><a href="~/Employee/DriverQR">Generar QR</a></li>*@
+        }
+        if (Model.RoleSession.ToString() == "3")
+        {
+            <li><a href="~/Line/Edit">Actualizar Información</a></li>
+            <li><a href="~/Employee">Administrar Empleados</a></li>
+            <li><a href="~/Route">Administrar Rutas</a></li>
+        }
+        if (Model.RoleSession.ToString() == "2")
+        {
+            @* <li><a href="~/TimeControl/Index">Control</a></li>*@
+        }
+        if (Model.RoleSession.ToString() == "1")
+        {
+            <li><a href="~/Chofer/ListRoutes">Ver Rutas</a></li>
+            <li><a href="~/NewReport/ReportChoferView">Ver Reportes</a></li>
+        }
+        <li><a class="button fit" href="~/Home/CloseSession">Cerrar Sesión</a></li>
+    }
+    else
+    {
+        <li><a class="button fit" href="~/Login/Index">Iniciar Sesión</a></li>
+    }
+</ul>
+
+

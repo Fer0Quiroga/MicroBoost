@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="24c8c696b1424cdb8c140139ce686f25" Name="Diagram1">
+        <EntityTypeShape EntityType="MicroBusPModel.Checkpoint" Width="1.5" PointX="3" PointY="14.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.DeviationRote" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.Employee" Width="1.5" PointX="6" PointY="14.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.Line" Width="1.5" PointX="0.75" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.MechanicalFailures" Width="1.5" PointX="8.25" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.Owner" Width="1.5" PointX="3" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.Person" Width="1.5" PointX="0.75" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.Place" Width="1.5" PointX="0.75" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.Report" Width="1.5" PointX="8.25" PointY="13.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.Route" Width="1.5" PointX="3" PointY="19.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.Sanction" Width="1.5" PointX="3" PointY="37.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.SanctionEmployee" Width="1.5" PointX="8.25" PointY="25.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.Star" Width="1.5" PointX="8.25" PointY="19.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.sysdiagrams" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.TimeControl" Width="1.5" PointX="11.25" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroBusPModel.User" Width="1.5" PointX="8.25" PointY="22.125" IsExpanded="true" />
+        <AssociationConnector Association="MicroBusPModel.FK_Checkpoint_Line" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_Checkpoint_Person" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_TimeControl_Checkpoint" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_Employee_Line" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_Employee_Person" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_MechanicalFailures_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_Report_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_SanctionEmployee_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_Star_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_TimeControl_Employee1" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_User_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_Owner_Line" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_Route_Line" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_Sanction_Line" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_Owner_Person" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_Route_Place" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroBusPModel.FK_SanctionEmployee_Sanction" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

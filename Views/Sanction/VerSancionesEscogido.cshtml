@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ProyectoControlLineaBus.Models.SancionesEmpleadoMostrar>
+
+@{
+    Layout = null;
+    ViewBag.Title = "VerSanciones";
+}
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Menú de Empleados</title>
+    
+</head>
+<body>
+    <div style="margin-top:5%"></div>
+
+    <h2 class="text-center">Sanciones CI: @ViewBag.ci</h2>
+
+
+    <table class="table" id="sanctionTable" border="1">
+        <thead>
+            <tr>
+                <th class="text-center">Sanción</th>
+                <th class="text-center">Descripción</th>
+                <th class="text-center">Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr data-year="@item.dateRegister.Year">
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.titulo)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.description)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.dateRegister)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+

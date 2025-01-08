@@ -1,0 +1,70 @@
+﻿@model ProyectoControlLineaBus.Models.EmployeeControl
+
+@{
+    ViewBag.Title = "CreateExistPersonControl";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+</head>
+<div style="margin-top:5%"></div>
+
+<h2 class="text-center">Crear Controlador</h2>
+
+<div>
+    @Html.ActionLink("Volver", "VerificationControl", "Employee", "", new { @class = "btn btn-outline-primary" })
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        <div class="row">
+            <div class="col-md-7">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+                        @TempData["Mail"]
+                    </div>
+                </div>
+                Escoge un Punto de Control
+                @Html.DropDownListFor(model => model.idCheckpoint, (SelectList)ViewBag.idCheckpoint, "Seleccione un Punto de Control", new { @class = "form-control" })
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.salary, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(model => model.salary, "{0:F2}", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.salary, "", new { @class = "text-danger" })
+                        @TempData["Salary"]
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="form-group col-md-3" style="margin-left:11%">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Registrar" class="btn btn-success mt-3" />
+                </div>
+            </div>
+            @TempData["Person"]
+            @TempData["NIT"]
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

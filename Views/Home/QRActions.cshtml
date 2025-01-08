@@ -1,0 +1,291 @@
+﻿@{
+    ViewBag.Title = "Página de Calificación y Reporte";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-success,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            width:100%;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            font-weight: bold
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            font-weight: bold;
+        }
+
+        .btn-info {
+            background-color: #006a78;
+            border-color: #006a78;
+            font-weight: bold;
+        }
+
+        .btn-warning {
+            background-color: #5c5c00;
+            border-color: #5c5c00;
+            font-weight: bold;
+        }
+        /* Estilos para los Modales */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 60px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #242943;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        #stars {
+            font-size: 2rem;
+            color: #d3d3d3;
+        }
+
+        .star {
+            cursor: pointer;
+        }
+
+            .star.selected,
+            .star:hover ~ .star.selected {
+                color: gold;
+            }
+    </style>
+</head>
+<body>
+    <div style="margin-top:25%"></div>
+    <div style="justify-content:center; align-items:center; height:50vh">
+        <button class="btn btn-outline-success m-2" onclick="mostrarModal('modal-calification')">Calificar</button>
+        <button class="btn btn-outline-danger m-2" onclick="mostrarModal('modal-report')">Reportar</button>
+    </div>
+
+    <!-- Modal para Reportar -->
+    <div id="modal-report" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('modal-report')">&times;</span>
+            <h2>Reportar conductor</h2>
+            <p>Placa del vehiculo: <label id="userId">@ViewBag.placa</label></p>
+            <label for="motivoReporte">Motivo del reporte:</label>
+            <select id="motivoReporte" class="mb-4">
+                <option value="Conducción temeraria">Conducción temeraria</option>
+                <option value="Mal trato al pasajero">Mal trato al pasajero</option>
+                <option value="Malas condiciones del vehículo">Malas condiciones del vehículo</option>
+                <option value="Incumplimiento de rutas">Incumplimiento de rutas</option>
+                <option value="Sobrecarga de pasajeros">Sobrecarga de pasajeros</option>
+                <option value="Cobro indebido">Cobro indebido</option>
+                <option value="Uso de dispositivos móviles">Uso de dispositivos móviles</option>
+                <option value="Mal estado del chofer">Mal estado del chofer</option>
+                <option value="Negarse a prestar el servicio">Negarse a prestar el servicio</option>
+                <option value="Conducción distraída">Conducción distraída</option>
+                <option value="Incumplimiento de normas de tránsito">Incumplimiento de normas de tránsito</option>
+                <option value="Acoso">Acoso</option>
+                <option value="Uso indebido de la bocina">Uso indebido de la bocina</option>
+                <option value="Pelea con otro conductor">Pelea con otro conductor</option>
+            </select>
+            <button onclick="submitReport()">Enviar</button>
+        </div>
+    </div>
+
+    <!-- Modal para Calificación -->
+    <div id="modal-calification" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('modal-calification')">&times;</span>
+            <h2>Califica al conductor</h2>
+            <p>Placa del vehiculo:<label id="userId" style="font-size:15px">@ViewBag.placa</label></p>
+            <div id="stars">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <p>Calificación seleccionada: <span id="ratingValue">0</span> estrellas</p>
+            <button onclick="submitRating()">Enviar</button>
+        </div>
+    </div>
+
+    <!-- Modal para Mostrar Éxito -->
+    <div id="modal-success" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('modal-success')">&times;</span>
+            <h2>Registro Exitoso</h2>
+            <p>La operación se ha realizado con éxito.</p>
+        </div>
+    </div>
+
+    <script>
+        const stars = document.querySelectorAll('.star');
+        let selectedRating = 0;
+
+        const mostrarModal = (name) => {
+            document.getElementById(name).style.display = "block";
+        };
+
+        const cerrarModal = (name) => {
+            document.getElementById(name).style.display = "none";
+            resetStars();
+        };
+
+        stars.forEach(star => {
+            star.addEventListener('click', function () {
+                selectedRating = this.getAttribute('data-value');
+                updateStars(selectedRating);
+                document.getElementById('ratingValue').textContent = selectedRating;
+            });
+
+            star.addEventListener('mouseover', function () {
+                updateStars(this.getAttribute('data-value'));
+            });
+
+            star.addEventListener('mouseout', function () {
+                updateStars(selectedRating);
+            });
+        });
+
+        const updateStars = (rating) => {
+            stars.forEach(star => {
+                if (star.getAttribute('data-value') <= rating) {
+                    star.classList.add('selected');
+                } else {
+                    star.classList.remove('selected');
+                }
+            });
+        };
+
+        const resetStars = () => {
+            updateStars(0);
+            selectedRating = 0;
+            document.getElementById('ratingValue').textContent = selectedRating;
+        }
+
+        const submitRating = () => {
+            const id = document.getElementById("userId").textContent.trim();  
+            const rating = selectedRating;  
+            if (rating == 0) {
+                alert("Por favor, selecciona una calificación.");
+                return;
+            }
+            cerrarModal('modal-calification');
+            mostrarModal('modal-success');
+            setTimeout(function () {
+                const url = `@Url.Action("SubmitCalification", "Home")?id=${id}&calificacion=${rating}`;
+                window.location.href = url;
+            }, 2000);
+        };
+
+
+        const submitReport = () => {
+            const id = document.getElementById("userId").textContent;
+            const reason = document.getElementById("motivoReporte").value;
+            cerrarModal('modal-report');
+            mostrarModal('modal-success');
+            var data = { id: id, reason: reason };
+            setTimeout(function () {
+                const url = `@Url.Action("SubmitReport", "Home")?id=${data.id}&reason=${data.reason}`;
+                window.location.href = url;
+            }, 2000);
+        };
+    </script>
+</body>
+</html>

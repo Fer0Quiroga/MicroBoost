@@ -1,0 +1,258 @@
+﻿@model List<ProyectoControlLineaBus.Models.MuestraRutasMapas>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Ver las rutas</title>
+
+    <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+    <!-- CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <!-- JS de Bootstrap y jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-success,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            font-weight: bold;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-primary {
+            font-weight: bold;
+            background-color: rgba(0, 123, 255, 0.7);
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+        #map-container {
+            position: relative;
+            width: 100%;
+            height: 370px;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #custom-image {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 250px;
+            height: 50px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="mt-2 text-center">
+        <h2>Rutas</h2>
+    </div>
+    <div class="col-md-1 mb-2">
+        @Html.ActionLink("Volver", "Index", "Chofer", "", new { @class = "btn btn-outline-primary" })
+    </div>
+    <div id="map-container">
+        <div id="map"></div>
+        <img id="custom-image" src="~/images/INDICACIONES1.png" alt="Icono personalizado" />
+    </div>
+
+    <!-- JS de Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var map = L.map('map').setView([-17.3935, -66.1570], 15);
+
+            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ', {
+                maxZoom: 19,
+                tileSize: 512,
+                zoomOffset: -1,
+            }).addTo(map);
+
+            var allRoutesGroup = L.featureGroup();
+            var allBlockagesGroup = L.featureGroup();
+
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <text>
+                var routePoints = [];
+                var bloqueoPoints = [];
+
+                @foreach (var ruta in Model[i].ListRutasMostrar)
+                {
+                    @:routePoints.push([@ruta.latitud, @ruta.longitud]);
+                }
+
+                @foreach (var bloqueo in Model[i].ListBloqueosMostrar)
+                {
+                    @:var bloqueoCoords = [];
+                    foreach (var bloqueoRoute in bloqueo.ListRutasMostrar)
+                    {
+                        @:bloqueoCoords.push([@bloqueoRoute.latitud, @bloqueoRoute.longitud]);
+                    }
+                    @:L.polyline(bloqueoCoords, {
+                    @:    color: 'red',
+                    @:    weight: 7,
+                    @:    opacity: 0.9,
+                    @:    smoothFactor: 1
+                    @:}).addTo(allBlockagesGroup);
+                }
+
+                var color = '#3388FF'; // Azul
+
+                // Crear borde negro para la ruta
+                L.polyline(routePoints, {
+                    color: 'black',
+                    weight: 7,
+                    opacity: 1,
+                    smoothFactor: 1
+                }).addTo(allRoutesGroup);
+
+                // Crear la ruta azul
+                L.polyline(routePoints, {
+                    color: color,
+                    weight: 5,
+                    opacity: 0.8,
+                    smoothFactor: 1
+                }).addTo(allRoutesGroup);
+
+                if (routePoints.length > 0) {
+                    var startIcon = L.divIcon({
+                        className: 'custom-start-icon',
+                        html: '<div style="background-color: green; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15]
+                    });
+
+                    var endIcon = L.divIcon({
+                        className: 'custom-end-icon',
+                        html: '<div style="background-color: red; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15]
+                    });
+
+
+                    L.marker(routePoints[routePoints.length - 1], { icon: endIcon }).addTo(allRoutesGroup).bindPopup("Fin Ruta " +@(i+1));
+                    L.marker(routePoints[0], { icon: startIcon }).addTo(allRoutesGroup).bindPopup("Inicio Ruta "+@(i+1));
+                }
+
+                @foreach (var parada in Model[i].ListParadasMostrar.Where(x => x.status == 1))
+                {
+                    @:L.marker([@parada.latitud, @parada.longitud])
+                    @:.bindPopup('@parada.description')
+                    @:.addTo(allRoutesGroup);
+                }
+
+                </text>
+            }
+
+            map.addLayer(allRoutesGroup);
+            map.addLayer(allBlockagesGroup);
+            map.fitBounds(allRoutesGroup.getBounds());
+
+            var userMarker = null;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(function (position) {
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+
+                    if (userMarker) {
+                        userMarker.setLatLng([lat, lng]);
+                    } else {
+                        userMarker = L.circleMarker([lat, lng], {
+                            color: 'black',
+                            fillColor: 'blue',
+                            fillOpacity: 0.8,
+                            radius: 10
+                        }).addTo(map).bindPopup("Tú estás aquí");
+                    }
+                }, function (error) {
+                    console.error("Error al obtener la ubicación: " + error.message);
+                }, {
+                    enableHighAccuracy: true,
+                    maximumAge: 10000,
+                    timeout: 5000
+                });
+            } else {
+                console.error("Geolocalización no es soportada por este navegador.");
+            }
+        });
+    </script>
+
+</body>
+</html>

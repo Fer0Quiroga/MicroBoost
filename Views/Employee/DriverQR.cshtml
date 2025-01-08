@@ -1,0 +1,22 @@
+﻿@{
+    Layout = null;
+}
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+</head>
+<div style="margin-top:5%"></div>
+<body style="background:white">
+    <h1 class="text-center" style="text-align: center; color:black; font-weight: bold; font-size: 50px">SI TIENES ALGUNA QUEJA QUEREMOS SABERLA</h1>
+    <div style="display:flex; justify-content:center">
+        <img src="@Url.Action("GenerateQR", "Employee", new { content = ViewBag.PlacaChofer })" alt="QR Code" style="border-radius: 20px; width: 500px; height: 500px; text-align:center; margin-left:20%" />
+    </div>
+    <h1 class="text-center" style="text-align: center; color: black; font-weight:bold; font-size: 50px">ESCANEAME</h1>
+</body>
+

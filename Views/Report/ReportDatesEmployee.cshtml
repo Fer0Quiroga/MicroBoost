@@ -1,0 +1,62 @@
+﻿@model IEnumerable<ProyectoControlLineaBus.Models.MuestraReport>
+
+@{
+    ViewBag.Title = "Reporte Fechas Empleado";
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+</head>
+<div style="margin-top:5%"></div>
+<div class="row">
+    <div class="col-md-1 mb-2">
+        @Html.ActionLink("Volver", "Index", "Employee", "", new { @class = "btn btn-outline-primary" })
+    </div>
+    <div class="col-md-3 mb-2">
+        @Html.ActionLink("Imprimir", "PrintReportDatesEmployee", "Report", "", new { @class = "btn btn-outline-success" })
+    </div>
+</div>
+<h2 class="text-center">Reporte Fechas @ViewBag.Start - @ViewBag.End</h2>
+<h3 class="text-center">NIT: @ViewBag.NIT</h3>
+<table class="table text-center text-white">
+    <tr>
+
+        <th style="text-align:center">
+            Nombre
+        </th>
+        <th style="text-align:center">
+            Placa
+        </th>
+        <th style="text-align:center">
+            Punto de Control
+        </th>
+        <th style="text-align:center">
+            Fecha de Registro
+        </th>
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.plate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descCheckpoint)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.dateRegister)
+            </td>
+        </tr>
+    }
+
+</table>
+Fecha de creación de reporte: @ViewBag.Hoy

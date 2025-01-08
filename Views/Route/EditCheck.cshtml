@@ -1,0 +1,296 @@
+﻿@model List<ProyectoControlLineaBus.Models.MuestraRutasMapas>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Actualizar Parada</title>
+
+    <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+    <!-- CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <!-- JS de Bootstrap y jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-success,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            font-weight: bold;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-primary {
+            font-weight: bold;
+            background-color: rgba(0, 123, 255, 0.7);
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+        #map {
+            height: 400px; /* Reducir altura del mapa */
+            width: 100%; /* Reducir el ancho del mapa para dejar espacio para los campos */
+        }
+
+        .time-fields {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+            .time-fields select {
+                width: 70px; /* Reducir el ancho de los select */
+                margin-right: 5px;
+            }
+
+        .colon {
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        .time-label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mt-4 text-center">
+        <h1>ACTUALIZAR PARADA</h1>
+    </div>
+    <div class="col-md-1 mb-2">
+        @Html.ActionLink("Volver", "Index", "Route", new { numTypeRoute = ViewBag.numTypeRoute }, new { @class = "btn btn-outline-primary" })
+    </div>
+    <div class="row">
+
+        <div class="col-md-6">
+            <div style="font-size:17px; font-weight:bold; margin-top:2%">Haga click en el mapa para marcar la nueva ubicación de la parada</div>
+            <div id="map"></div>
+        </div>
+
+        <div id="streetNames" class="col-md-6">
+
+            <div style="font-size:18px; font-weight:bold; margin-top:2%; margin-bottom:2%">Los tiempos deben ser marcados teniendo en cuenta que parte desde la ruta 1</div>
+            <!-- Formulario para enviar datos al controlador -->
+            <form id="ubicacionesForm" action="@Url.Action("EditCheck", "Route")" method="post">
+
+
+                <!-- Campos de hora y minutos -->
+                <div class="form-group">
+                    <div class="time-fields">
+                        <label for="hora" class="time-label">Hora:</label>
+                        @Html.DropDownList("hora", (SelectList)ViewBag.Hours, new { @class = "form-control form-control-lg font-weight-bold" })
+                        <span class="colon">:</span>
+                        @Html.DropDownList("minuto", (SelectList)ViewBag.Minutes, new { @class = "form-control form-control-lg font-weight-bold" })
+                    </div>
+                </div>
+
+                <!-- Campos de hora y minutos de mercado -->
+                <div class="form-group">
+                    <div class="time-fields">
+                        <label for="horaMercado" class="time-label">Hora de Mercado:</label>
+                        @Html.DropDownList("horaMercado", (SelectList)ViewBag.Hours2, new { @class = "form-control form-control-lg font-weight-bold" })
+                        <span class="colon">:</span>
+                        @Html.DropDownList("minutoMercado", (SelectList)ViewBag.Minutes2, new { @class = "form-control form-control-lg font-weight-bold" })
+                    </div>
+                </div>
+                <h3>Nueva ubicación:</h3>
+                <ul id="streetList"></ul>
+                <input type="hidden" id="ubicaciones" name="ubicaciones" />
+                <button type="button" id="enviarUbicacionesBtn" class="btn btn-primary mt-1">Actualizar Parada</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JS de Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        // Inicializar el mapa centrado en Cochabamba
+        var map = L.map('map').setView([-17.3935, -66.1570], 15);
+
+        // Agregar el tile layer de Mapbox al mapa
+        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ', {
+            maxZoom: 19,
+            tileSize: 512,
+            zoomOffset: -1,
+        }).addTo(map);
+
+        // Definir los colores para las rutas dentro del bucle
+        var colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A8', '#FF8F33'];
+
+        var allRoutesGroup = L.featureGroup();
+
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <text>
+            var routePoints = [];
+
+            @foreach (var ruta in Model[i].ListRutasMostrar)
+            {
+                @:routePoints.push([@ruta.latitud, @ruta.longitud]);
+            }
+
+            // Asignar color a la ruta basado en el índice de la iteración
+            var color = colors[@i];
+
+            // Dibujar la línea de la ruta con solo el color principal
+            var polyline = L.polyline(routePoints, {
+                color: color,  // Color de la línea principal
+                weight: 5,     // Grosor de la línea principal
+                opacity: 0.8,  // Opacidad de la línea principal
+                smoothFactor: 1
+            }).addTo(allRoutesGroup); // Añadir la ruta al grupo de rutas
+             L.polyline(routePoints, {
+                 color: 'black',  // Color del borde
+                 weight: 6,       // Grosor del borde
+                 opacity: 0.6,    // Opacidad del borde
+                 smoothFactor: 1
+             }).addTo(allRoutesGroup);
+            if (routePoints.length > 0) {
+                var startIcon = L.divIcon({
+                    className: 'custom-start-icon',
+                    html: '<div style="background-color: green; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+
+                var endIcon = L.divIcon({
+                    className: 'custom-end-icon',
+                    html: '<div style="background-color: red; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+
+                L.marker(routePoints[0], { icon: startIcon }).addTo(allRoutesGroup).bindPopup("Inicio Ruta "+@(i+1));
+                L.marker(routePoints[routePoints.length - 1], { icon: endIcon }).addTo(allRoutesGroup).bindPopup("Fin Ruta "+@(i+1));
+            }
+
+            @foreach (var parada in Model[i].ListParadasMostrar)
+            {
+                @:L.marker([@parada.latitud, @parada.longitud])
+                @:.bindPopup('@parada.description')
+                @:.addTo(allRoutesGroup); // Añadir las paradas al grupo de rutas
+            }
+
+            </text>
+        }
+
+        // Ajustar el zoom para que todas las rutas sean visibles
+        map.addLayer(allRoutesGroup);
+        map.fitBounds(allRoutesGroup.getBounds());
+
+        // Variable para almacenar el marcador actual
+        var currentMarker = null;
+
+        // Evento click en el mapa
+        map.on('click', function (e) {
+            var latlng = e.latlng;
+            var lat = latlng.lat;
+            var lng = latlng.lng;
+
+            // URL de la API de Mapbox para geocodificación inversa
+            var geocodeURL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ`;
+
+            fetch(geocodeURL)
+                .then(response => response.json())
+                .then(data => {
+                    var streetName = data.features[0]?.text || 'No se pudo obtener la calle';
+
+                    // Eliminar el marcador actual si existe
+                    if (currentMarker) {
+                        map.removeLayer(currentMarker);
+                    }
+
+                    // Crear un nuevo marcador
+                    currentMarker = L.marker([lat, lng]).addTo(map);
+
+                    // Mostrar la ubicación en un div al lado del mapa
+                    var streetList = document.getElementById('streetList');
+                    streetList.innerHTML = `Calle: ${streetName}`;
+
+                    // Actualizar el contenido del formulario oculto
+                    var ubicacionesInput = document.getElementById('ubicaciones');
+                    ubicacionesInput.value = `${streetName}/${lat}/${lng}`;
+                })
+                .catch(error => console.error('Error en la geocodificación inversa:', error));
+        });
+
+        // Botón para enviar las ubicaciones al servidor
+        document.getElementById('enviarUbicacionesBtn').addEventListener('click', function () {
+            document.getElementById('ubicacionesForm').submit();
+        });
+
+    </script>
+
+</body>
+</html>
+
+

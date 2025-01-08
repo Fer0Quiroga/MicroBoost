@@ -1,0 +1,65 @@
+﻿@model ProyectoControlLineaBus.Models.EmployeeChofer
+
+@{
+    ViewBag.Title = "Registro Chofer";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+</head>
+<div style="margin-top:5%"></div>
+<h2 class="text-center">Registrar Chofer</h2>
+<div>
+    @Html.ActionLink("Volver", "VerificationChofer", "Employee", "", new { @class = "btn btn-outline-primary" })
+</div>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-horizontal">
+        <hr />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.plate, htmlAttributes: new { @class = "control-label col-md-7" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.plate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.plate, "", new { @class = "text-danger" })
+                        @TempData["Plate"]
+                    </div>
+                    @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+                        @TempData["Mail"]
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.salary, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-7">
+                        @Html.TextBoxFor(model => model.salary, "{0:F2}", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.salary, "", new { @class = "text-danger" })
+                        @TempData["Salary"]
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5"></div>
+            <div class="form-group col-md-4">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Registrar" class="btn btn-success mt-1" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+

@@ -1,0 +1,151 @@
+﻿@model ProyectoControlLineaBus.Models.Place
+@{
+    ViewBag.Title = "Vista Chofer";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>@ViewBag.Title</title>
+
+    <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+    <!-- CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <style>
+        /* Estilos para los Modales */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 60px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #242943;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        #fallaMecanica {
+            font-weight: bold;
+        }
+        #fallaMecanica option {
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="mt-5 text-center">
+        <h1>BIENVENIDO</h1>
+    </div>
+
+    <div class="inner" style="text-align:center;">
+        <div class="mt-4 text-center">
+            <a class="button fit" href="~/Chofer/ListRoutes">Ver las Rutas</a>
+        </div>
+        <button class="button fit mt-4 text-center" onclick="mostrarModal('modal-report')">Registrar Falla Mecanica</button>
+        <div class="mt-4 text-center">
+            <a class="button fit" href="~/NewReport/ReportChoferView">Ver Reportes</a>
+        </div>
+        <div>
+            <br /><p class="text-center">@ViewBag.HomeMensaje</p>
+        </div>
+    </div>
+
+    <!-- Modal para agregar falla mecánica -->
+    <div id="modal-report" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('modal-report')">&times;</span>
+            <h2>Registrar Falla Mecánica</h2>
+            <label for="fallaMecanica">Seleccione una falla:</label>
+            <select id="fallaMecanica" class="form-control mb-4">
+                <option value="Falla del sistema de carga">Falla del sistema de carga</option>
+                <option value="Falla en el sistema de combustible">Falla en el sistema de combustible</option>
+                <option value="Falla en el sistema de enfriamiento">Falla en el sistema de enfriamiento</option>
+                <option value="Falla del sistema de lubricación">Falla del sistema de lubricación</option>
+                <option value="Falla en el sistema de control del motor (ECU)">Falla en el sistema de control del motor (ECU)</option>
+                <option value="Falla en los rodamientos de las ruedas">Falla en los rodamientos de las ruedas</option>
+                <option value="Falla en el sistema de escape de frenos">Falla en el sistema de escape de frenos</option>
+                <option value="Falla en el sistema de arranque">Falla en el sistema de arranque</option>
+                <option value="Falla en el sistema de tracción total (AWD/4WD)">Falla en el sistema de tracción total (AWD/4WD)</option>
+                <option value="Falla de motor">Falla de motor</option>
+                <option value="Falla de llantas">Falla de llantas</option>
+                <option value="Falla de transmisión">Falla de transmisión</option>
+                <option value="Falla de frenos">Falla de frenos</option>
+                <option value="Falla del sistema eléctrico">Falla del sistema eléctrico</option>
+                <option value="Falla de suspensión">Falla de suspensión</option>
+                <option value="Falla del sistema de dirección">Falla del sistema de dirección</option>
+                <option value="Falla de escape">Falla de escape</option>
+                <option value="Falla del sistema de climatización">Falla del sistema de climatización</option>
+            </select>
+            <button onclick="submitReport()">Enviar</button>
+        </div>
+    </div>
+
+    <div id="modal-success" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('modal-success')">&times;</span>
+            <h2>Registro Exitoso</h2>
+            <p>La operación se ha realizado con éxito.</p>
+        </div>
+    </div>
+
+    <script>
+
+     const mostrarModal = (name) => {
+         document.getElementById(name).style.display = "block";
+     };
+
+     const cerrarModal = (name) => {
+         document.getElementById(name).style.display = "none";
+     };
+
+     const submitReport = () => {
+         const reason = document.getElementById("fallaMecanica").value;
+         cerrarModal('modal-report');
+         mostrarModal('modal-success');
+         setTimeout(function () {
+             const url = `@Url.Action("reportChoferBusMechanicalFailures", "Chofer")?description=${reason}`;
+             window.location.href = url;
+         }, 2000);
+     };
+    </script>
+</body>
+</html>

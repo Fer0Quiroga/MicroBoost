@@ -1,0 +1,89 @@
+﻿@model IEnumerable<ProyectoControlLineaBus.Models.MuestraOwner>
+
+@{
+    ViewBag.Title = "Dueños";
+}
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+</head>
+<div style="margin-top:5%"></div>
+<body>
+    <h2 class="text-center">Dueños</h2>
+    @TempData["TempData"]
+    <div class="row">
+        <div class="col-md-2">
+            @Html.ActionLink("Crear Dueño", "Create", "", new { @class = "btn btn-outline-success mb-2" })
+        </div>
+        <div class="col">
+            @Html.ActionLink("Volver a líneas", "Index", "Line", "", new { @class = "btn btn-outline-primary mb-2" })
+        </div>
+    </div>
+        
+    <div class="table-responsive">
+        <table class=" text-center text-white">
+            <tr>
+                <th style="text-align: center;" >
+                    @Html.DisplayNameFor(model => model.nit)
+                </th>
+                <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.doc)
+                </th>
+                <th style="text-align: center;" ></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        @Html.DisplayFor(modelItem => item.nit)
+                    </td>
+                    <td style="text-align: center;">
+                        @Html.DisplayFor(modelItem => item.doc)
+                    </td>
+                    <td style="text-align: center;">
+                        @Html.ActionLink("Detalles", "Details", "Owner", new { id = item.nit }, new { @class = "btn btn-warning mb-2 text-white" })
+                        <a href="#" class="btn btn-danger mb-2" data-toggle="modal" data-target="#lineaModal" data-id="@item.idOwner" data-description="@item.nit">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="modal fade" id="lineaModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="color:black" id="confirmationModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" style="color:black" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="color:black">
+                    ¿Estás seguro de que deseas eliminar este dueño?
+                    <p><span id="description"></span> </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a id="confirmDelete" href="#" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#lineaModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var description = button.data('description');
+        var modal = $(this);
+        modal.find('#description').text(description);
+        modal.find('#confirmDelete').attr('href', '@Url.Action("Delete", "Owner")/' + button.data('id'));
+        });
+    </script>
+</body>
+

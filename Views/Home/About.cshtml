@@ -1,0 +1,41 @@
+﻿
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapa con Ruta</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body>
+    <div id="map" style="width: 800px; height: 600px;"></div>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Configura el mapa
+        var mymap = L.map('map').setView([-17.3727405255654120000, -66.1580358761637100000], 13);
+
+        // Agrega una capa de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(mymap);
+
+        // Define las coordenadas de inicio y destino
+        var startPoint = [-17.3727405255654120000, -66.1580358761637100000];
+        var endPoint = [-17.3785910298941000000, -66.1497629487311700000];
+
+        // Define los puntos intermedios
+        var intermediatePoints = [
+
+            [-17.373163191026475, -66.15706490537636],
+            [-17.376402229553992, -66.15709026747234]
+
+        ];
+
+        // Crea una ruta con puntos intermedios
+        var waypoints = [L.latLng(startPoint[0], startPoint[1])].concat(intermediatePoints.map(point => L.latLng(point[0], point[1]))).concat(L.latLng(endPoint[0], endPoint[1]));
+        var route = L.Routing.control({
+            waypoints: waypoints
+        }).addTo(mymap);
+    </script>
+</body>
+</html>

@@ -1,0 +1,567 @@
+﻿@model List<ProyectoControlLineaBus.Models.MuestraRutasMapas>
+
+@{
+    ViewBag.Title = "Ruta";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Administrar Ruta</title>
+
+    <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+    <!-- CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <!-- JS de Bootstrap y jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-success,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            font-weight:bold;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-primary {
+            font-weight: bold;
+            background-color: rgba(0, 123, 255, 0.7);
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+        .route-link {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+            .route-link:hover {
+                color: #0056b3;
+            }
+
+        .table-section {
+            margin-top: 20px;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .ruta-descripcion, .parada-descripcion {
+            display: none;
+        }
+
+        .table-scroll {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        #map-container {
+            position: relative; 
+            width: 100%;
+            height: 350PX;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #custom-image {
+            position: absolute;
+            bottom: 0px; 
+            right: 0px; 
+            width: 250px;
+            height: 50px;
+            z-index: 1000; 
+            pointer-events: none; 
+        }
+    </style>
+</head>
+<body>
+
+    <h2 class="text-center">Ruta @ViewBag.numTypeRoute</h2>
+    <div class="row">
+        <div class="col-md-1 mb-2">
+            @Html.ActionLink("Volver", "ListRoutes", "Route", "", new { @class = "btn btn-outline-primary" })
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-3 mb-2">
+            <a id="crearNuevo" href="#" class="btn btn-outline-info">Crear Nueva Ubicacion</a>
+        </div>
+        <div class="col-md-1 mb-2">
+            @Html.ActionLink("Crear Nueva Parada", "RegisterCheck", "Route", new { numTypeRoute = ViewBag.numTypeRoute }, new { @class = "btn btn-outline-info" })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div id="map-container">
+                <div id="map"></div>
+                <img id="custom-image" src="~/images/INDICACIONES2.png" alt="Icono personalizado" />
+            </div>
+        </div>
+        <div class="col-md-3 ">
+            <div class="route-selection">
+                <span class="btn btn-danger mb-2" onclick="enfocarRuta(1)">Ruta Ida</span>
+                <span class="btn btn-danger mb-2" onclick="enfocarRuta(2)">Ruta Vuelta</span>
+                @Html.ActionLink("Administrar Desvíos Ida", "ViewDeviation1", "Route", new { numTypeRoute = ViewBag.numTypeRoute }, new { @class = "btn btn-outline-warning mb-1 text-center" })
+                @Html.ActionLink("Administrar Desvíos Vuelta", "ViewDeviation2", "Route", new { numTypeRoute = ViewBag.numTypeRoute }, new { @class = "btn btn-outline-warning mb-1" })
+                @Html.ActionLink("Modificar Parada Principal 1", "EditParada1Check", "Route", new { numTypeRoute = ViewBag.numTypeRoute }, new { @class = "btn btn-outline-success mb-1" })
+                @Html.ActionLink("Modificar Parada Principal 2", "EditParada2Check", "Route", new { numTypeRoute = ViewBag.numTypeRoute }, new { @class = "btn btn-outline-success " })
+            </div>
+        </div>
+    </div>
+
+    <div class="row table-section">
+        <div class="col-md-6">
+            <input type="text" class="form-control search-box" id="searchParadas" placeholder="Buscar paradas...">
+            <div class="table-scroll">
+                <table class="table text-center text-white">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center">PARADAS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paradasTableBody">
+                        @if (Model[0].ListParadasMostrar != null && Model[0].ListParadasMostrar.Count > 0)
+                        {
+                            foreach (var parada in Model[0].ListParadasMostrar.Where(x => x.status == 1))
+                            {
+                                <tr onmouseover="this.style.color='black'; this.style.backgroundColor='gray';" onmouseout="this.style.color='white'; this.style.backgroundColor='' "class="parada-descripcion parada-@Model[0].NumeroRuta" data-lat="@parada.latitud" data-lng="@parada.longitud" >
+                                    <td>
+                                        @Html.DisplayFor(modelItem => parada.description)
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#confirmationModal" data-id="@parada.idCheckpoint" data-description="@parada.description">Eliminar</a>
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Editar", "EditCheck", "Route", new { id = parada.idCheckpoint, numTypeRoute = ViewBag.numTypeRoute }, new { @class = "btn btn-primary" })
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <input type="text" class="form-control search-box" id="searchUbicaciones" placeholder="Buscar ubicaciones...">
+            <div class="table-scroll">
+                <table class="table text-center text-white">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center">UBICACIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ubicacionesTableBody">
+                        @foreach (var item in Model)
+                        {
+                            if (item.ListRutasMostrar != null && item.ListRutasMostrar.Count > 0)
+                            {
+                                foreach (var item2 in item.ListRutasMostrar.Where(x => x.status != 2))
+                                {
+                                    <tr onmouseover="this.style.color='black'; this.style.backgroundColor='gray';" onmouseout="this.style.color='white'; this.style.backgroundColor='';" class="ruta-descripcion ruta-@item.NumeroRuta" data-lat="@item2.latitud" data-lng="@item2.longitud">
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item2.name)
+                                        </td>
+                                        <td>
+                                            <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#personModal" data-id="@item2.idRoute" data-description="@item2.name">Eliminar</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="personModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel" style="color:black">Confirmar Eliminación</h5>
+                    <button type="button" style="color:black" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="color:black">
+                    ¿Estás seguro de que deseas eliminar esta Ubicación?
+                    <p><span id="description"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a id="confirmDelete" href="#" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="color:black" id="confirmationModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" style="color:black" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="color:black">
+                    ¿Estás seguro de que deseas eliminar la Parada?: <p><span id="checkpointDescription"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a id="confirmDelete" href="#" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+    var map = L.map('map').setView([-17.3935, -66.1570], 15);
+
+    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ', {
+        maxZoom: 19,
+        tileSize: 512,
+        zoomOffset: -1,
+    }).addTo(map);
+
+    var startIcon = L.divIcon({
+        className: 'custom-start-icon',
+        html: '<div style="background-color: green; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+    });
+
+    var endIcon = L.divIcon({
+        className: 'custom-end-icon',
+        html: '<div style="background-color: red; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+    });
+
+    var rutas = [];
+    var paradas = [];
+    var bloqueos = []; 
+    var marker = null; 
+    var selectedRouteNumber = 1; 
+        mostrarDescTabla();
+    @foreach (var item in Model)
+    {
+        @:var waypoints = [];
+        @:var bloqueoCoords = [];
+
+        foreach (var route in item.ListRutasMostrar)
+        {
+        @:    waypoints.push([@route.latitud, @route.longitud]);
+        }
+
+        @:rutas.push({
+        @:    nombre: 'Ruta @item.NumeroRuta',
+        @:    waypoints: waypoints,
+        @:    color: '#007bff' 
+        @:});
+
+        foreach (var bloqueo in item.ListBloqueosMostrar)
+        {
+            @:bloqueoCoords = [];
+            foreach (var bloqueoRoute in bloqueo.ListRutasMostrar)
+            {
+                @:bloqueoCoords.push([@bloqueoRoute.latitud, @bloqueoRoute.longitud]);
+            }
+            @:bloqueos.push({
+            @:    coords: bloqueoCoords,
+            @:    numeroRuta: @item.NumeroRuta, 
+            @:    color: 'red' 
+            @:});
+        }
+
+        foreach (var parada in item.ListParadasMostrar.Where(x => x.status == 1))
+        {
+            @:paradas.push({
+            @:    latLng: [@parada.latitud, @parada.longitud],
+            @:    descripcion: '@parada.description',
+            @:    numeroRuta: @item.NumeroRuta
+            @:});
+        }
+    }
+
+    var routeLayers = []; 
+    var paradasLayers = [];
+    var bloqueoLayers = []; 
+
+
+    function agregarRutas() {
+        rutas.forEach(function (ruta) {
+            var waypointsLatLng = ruta.waypoints.map(function(coord) {
+                return L.latLng(coord[0], coord[1]);
+            });
+
+            
+            var routeBorder = L.polyline(waypointsLatLng, {
+                color: 'black',
+                weight: 7,
+                opacity: 1
+            }).addTo(map);
+
+            
+            var routeLayer = L.polyline(waypointsLatLng, {
+                color: ruta.color,
+                weight: 5,
+                opacity: 0.8
+            }).addTo(map);
+
+            var endMarker = L.marker(waypointsLatLng[waypointsLatLng.length - 1], { icon: endIcon }).addTo(map);
+            var startMarker = L.marker(waypointsLatLng[0], { icon: startIcon }).addTo(map);
+
+            routeLayers.push({
+                border: routeBorder,
+                layer: routeLayer,
+                endMarker: endMarker,
+                startMarker: startMarker,
+                nombre: ruta.nombre
+            });
+        });
+
+
+        paradas.forEach(function(parada) {
+            var marker = L.marker(parada.latLng).addTo(map).bindPopup(parada.descripcion);
+            paradasLayers.push(marker);
+        });
+
+
+        bloqueos.forEach(function (bloqueo) {
+            var bloqueoLayer = L.polyline(bloqueo.coords, {
+                color: bloqueo.color,
+                weight: 5,
+                opacity: 0.8
+            }).addTo(map);
+            bloqueoLayers.push(bloqueoLayer);
+        });
+
+
+        var group = new L.featureGroup(routeLayers.map(function(r) { return r.layer; }).concat(bloqueoLayers));
+        map.fitBounds(group.getBounds());
+    }
+
+    function enfocarRuta(numeroRuta) {
+        selectedRouteNumber = numeroRuta;
+
+
+        document.getElementById('searchParadas').value = '';
+        document.getElementById('searchUbicaciones').value = '';
+
+        if (marker) {
+            map.removeLayer(marker); 
+        }
+
+
+        bloqueoLayers.forEach(function (bloqueoLayer) {
+            map.removeLayer(bloqueoLayer);
+        });
+        bloqueoLayers = []; 
+
+
+        routeLayers.forEach(function (route, index) {
+            if (index + 1 === numeroRuta) {
+                map.addLayer(route.border); 
+                map.addLayer(route.layer);
+                map.addLayer(route.endMarker);
+                map.addLayer(route.startMarker);
+                map.fitBounds(route.layer.getBounds());
+            } else {
+                map.removeLayer(route.layer);
+                map.removeLayer(route.border); 
+                map.removeLayer(route.endMarker);
+                map.removeLayer(route.startMarker);
+            }
+        });
+
+
+        paradasLayers.forEach(function(marker, index) {
+            var parada = paradas[index];
+            if (parada.numeroRuta === numeroRuta || parada.numeroRuta === 0) {
+                marker.addTo(map);
+            } else {
+                map.removeLayer(marker);
+            }
+        });
+
+
+        bloqueos.forEach(function (bloqueo) {
+            if (bloqueo.numeroRuta === numeroRuta) {
+                var bloqueoLayer = L.polyline(bloqueo.coords, {
+                    color: bloqueo.color,
+                    weight: 5,
+                    opacity: 0.8
+                }).addTo(map);
+                bloqueoLayers.push(bloqueoLayer);
+            }
+        });
+
+        mostrarDescripciones(numeroRuta);
+    }
+
+    function mostrarDescripciones(numeroRuta) {
+        $('.ruta-descripcion').hide();
+        $('.ruta-' + numeroRuta).show();
+    }
+
+        function mostrarDescTabla() {
+            $('.parada-descripcion').hide();
+            $('.parada-1').show();
+        }
+    $('tr').click(function () {
+        var lat = $(this).data('lat');
+        var lng = $(this).data('lng');
+
+        if (marker) {
+            map.removeLayer(marker); 
+        }
+
+        marker = L.marker([lat, lng]).addTo(map); 
+        map.setView([lat, lng], 17);
+    });
+
+    agregarRutas();
+
+    $('#personModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var description = button.data('description');
+        var modal = $(this);
+        modal.find('#description').text(description);
+        modal.find('#confirmDelete').attr('href', '@Url.Action("Delete", "Route")/' + button.data('id'));
+    });
+
+    $('#confirmationModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var description = button.data('description');
+        var modal = $(this);
+        modal.find('#checkpointDescription').text(description);
+        modal.find('#confirmDelete').attr('href', '@Url.Action("Delete", "Checkpoint")/' + button.data('id'));
+    });
+
+    function searchParadas(classSelector) {
+        var input = $('#searchParadas').val().toLowerCase();
+        var rows = $(classSelector);
+
+        rows.each(function() {
+            var row = $(this);
+            var cellText = row.text().toLowerCase();
+            row.toggle(cellText.indexOf(input) > -1);
+        });
+    }
+
+    function searchUbicaciones(classSelector) {
+        var input = $('#searchUbicaciones').val().toLowerCase();
+        var rows = $(classSelector);
+
+        rows.each(function() {
+            var row = $(this);
+            var cellText = row.text().toLowerCase();
+            row.toggle(cellText.indexOf(input) > -1);
+        });
+    }
+
+    $('#searchParadas').on('keyup', function() {
+        searchParadas('.parada-' + selectedRouteNumber + ', .parada-0');
+    });
+
+    $('#searchUbicaciones').on('keyup', function() {
+        searchUbicaciones('.ruta-' + selectedRouteNumber);
+    });
+
+    document.getElementById('crearNuevo').addEventListener('click', function(e) {
+        e.preventDefault(); 
+
+        if (selectedRouteNumber === null) {
+            alert("Por favor, selecciona una ruta primero.");
+            return; 
+        }
+
+        var url = '@Url.Action("IndexUbicacionesRuta", "Route")' + '?NumRuta=' + selectedRouteNumber + "&numTypeRoute=" + @ViewBag.numTypeRoute;
+
+        window.location.href = url; 
+    });
+
+    </script>
+
+</body>
+</html>

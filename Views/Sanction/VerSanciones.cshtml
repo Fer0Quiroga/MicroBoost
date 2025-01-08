@@ -1,0 +1,310 @@
+﻿@model IEnumerable<ProyectoControlLineaBus.Models.SancionesEmpleadoMostrar>
+
+@{
+    ViewBag.Title = "VerSanciones";
+}
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <title>Menú de Empleados</title>
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            font-weight: bold;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            font-weight: bold;
+        }
+
+        .btn-info {
+            background-color: #006a78;
+            border-color: #006a78;
+            font-weight: bold;
+        }
+
+        .btn-warning {
+            background-color: #5c5c00;
+            border-color: #5c5c00;
+            font-weight: bold;
+        }
+
+        .modal-custom {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content-custom, .modal-content {
+            background-color: #242943;
+            color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-header {
+            border-bottom: none;
+        }
+
+        .modal-footer {
+            border-top: none;
+            justify-content: center;
+        }
+
+        .close-custom, .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: white;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        .dropdown-item {
+            color: black !important;
+            font-weight: bold !important;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        #fallaMecanica {
+            font-weight: bold;
+        }
+
+            #fallaMecanica option {
+                font-weight: bold;
+            }
+
+        .dropdown-item:hover {
+            background-color: #343a40;
+            color: white !important;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #343a40;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        .table th, .table td {
+            padding: 10px;
+        }
+
+        .table th, .table td {
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div style="margin-top:5%"></div>
+
+    <h2 class="text-center">Sanciones CI: @ViewBag.ci</h2>
+
+    <div class="row">
+        <div class="col-md-3 mb-2">
+            @Html.ActionLink("Volver", "Index", "Employee", "", new { @class = "btn btn-outline-primary" })
+        </div>
+        <div class="col-md-3 mb-2">
+            <a class="btn btn-outline-info" onclick="mostrarModal('modal-report')">Asignar Sanción</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <div class="form-group">
+                <label for="year">Filtrar por año:</label>
+
+            </div>
+           
+        </div>
+        <div class="col-md-3 mb-2">
+            <select id="yearFilter" name="selectedYear" class="form-control" style="font-weight:bold">
+                <option value="Todos los años">Todos los años</option>
+                @for (var year = DateTime.Now.Year; year >= 2020; year--)
+                {
+                    <option value="@year">@year</option>
+                }
+            </select>
+            <button class="btn btn-outline-info mt-1" style="margin-left:48%" onclick="imprimirLista()">Imprimir</button>
+        </div>
+    </div>
+
+    <table class="table text-white" id="sanctionTable">
+        <thead>
+            <tr>
+                <th class="text-center">Sanción</th>
+                <th class="text-center">Descripción</th>
+                <th class="text-center">Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr data-year="@item.dateRegister.Year">
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.titulo)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.description)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.dateRegister)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Modal para asignar sanción -->
+    <div id="modal-report" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('modal-report')">&times;</span>
+            <h2>Asignar Sanción</h2>
+            <p>Chofer: <label id="userId">@ViewBag.ci</label></p>
+            <select id="motivoReporte" class="mb-4">
+                @if (ViewBag.SancionesDisponibles != null)
+                {
+                    foreach (var sancion in ViewBag.SancionesDisponibles)
+                    {
+                        <option value="@sancion.idSanction">@sancion.title</option>
+                    }
+                }
+            </select>
+            <button onclick="submitReport()">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        // Filtrar la tabla cuando se seleccione un año
+        document.getElementById("yearFilter").addEventListener("change", function () {
+            var selectedYear = this.value;
+            var rows = document.querySelectorAll("#sanctionTable tbody tr");
+
+            rows.forEach(function (row) {
+                var rowYear = row.getAttribute("data-year");
+                if (selectedYear === "Todos los años" || rowYear === selectedYear) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+
+       
+        const imprimirLista = () => {
+            const selectedYear = document.getElementById("yearFilter").value; 
+            const id = '@ViewBag.ci';
+            const url = `@Url.Action("PrintedReportFallas", "Sanction")?id=${id}&selectedYear=${selectedYear}`; 
+            window.location.href = url; 
+        };
+
+        const mostrarModal = (name) => {
+            const modalElement = document.getElementById(name);
+            if (modalElement) {
+                modalElement.style.display = "block";
+            } else {
+                console.error(`Modal with ID ${name} not found.`);
+            }
+        };
+
+        const cerrarModal = (name) => {
+            const modalElement = document.getElementById(name);
+            if (modalElement) {
+                modalElement.style.display = "none";
+            } else {
+                console.error(`Modal with ID ${name} not found.`);
+            }
+        };
+
+        const submitReport = () => {
+            const id = document.getElementById("userId").textContent;
+            const sanctionId = document.getElementById("motivoReporte").value;
+            cerrarModal('modal-report');
+            mostrarModal('modal-success');
+            var data = { id: id, sanctionId: sanctionId };
+            const url = `@Url.Action("CreateEmployeeSanction", "Sanction")?id=${data.id}&sanctione=${data.sanctionId}`;
+            window.location.href = url;
+        };
+    </script>
+</body>

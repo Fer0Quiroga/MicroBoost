@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <style>
+        /* Estilo para el mapa */
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        /* Estilo para el marcador de ubicación encontrada */
+        .custom-marker {
+            background-color: red; /* Punto rojo */
+            width: 20px;
+            height: 20px;
+            border-radius: 50%; /* Hace el marcador redondo */
+            border: 3px solid black;
+        }
+        /* Estilo para el marcador de ubicación del usuario */
+        .my-location-marker {
+            width: 20px; /* Aumenta el tamaño del marcador */
+            height: 20px; /* Aumenta el tamaño del marcador */
+            background-color: blue; /* Color de fondo azul */
+            border: 3px solid black; /* Borde negro más grueso */
+            border-radius: 50%; /* Hace el marcador redondo */
+        }
+    </style>
+</head>
+
+<body class="is-preload">
+    <!-- Aquí va tu HTML -->
+    <div id="map"></div>
+
+    <!-- Scripts de Leaflet y plugins -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <!-- Luego otros scripts que necesites -->
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/jquery.scrolly.min.js"></script>
+    <script src="~/assets/js/jquery.scrollex.min.js"></script>
+    <script src="~/assets/js/browser.min.js"></script>
+    <script src="~/assets/js/breakpoints.min.js"></script>
+    <script src="~/assets/js/util.js"></script>
+    <script src="~/assets/js/main.js"></script>
+    <script src="~/Scripts/qrCode.min.js"></script>
+
+    <!-- Inicialización del mapa y geolocalización -->
+    <script>
+        $(document).ready(function () {
+            // Inicializar el mapa centrado en Cochabamba
+            var map = L.map('map').setView([-17.3935, -66.1570], 15);
+
+            L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ', {
+                maxZoom: 19,
+                tileSize: 512,
+                zoomOffset: -1,
+            }).addTo(map);
+
+            // Intentar obtener la ubicación del usuario
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var userLat = position.coords.latitude;
+                    var userLng = position.coords.longitude;
+
+                    // Crear un marcador personalizado
+                    var myLocationIcon = L.divIcon({
+                        className: 'my-location-marker'
+                    });
+
+                    // Añadir el marcador al mapa en la ubicación del usuario
+                    var userMarker = L.marker([userLat, userLng], { icon: myLocationIcon }).addTo(map);
+
+                    // Añadir un popup al marcador del usuario
+                    userMarker.bindPopup("Tú estás aquí").openPopup();
+                }, function (error) {
+                    console.error("Error al obtener la ubicación: ", error);
+                });
+            } else {
+                console.error("Geolocalización no es soportada por este navegador.");
+            }
+
+            // Agregar control de búsqueda al mapa limitado a Cochabamba
+            var geocoder = L.Control.Geocoder.nominatim({
+                geocodingQueryParams: {
+                    countrycodes: 'BO', // Limitar a Bolivia
+                    viewbox: '-66.3,-17.6,-65.9,-17.2', // Limitar a la región de Cochabamba
+                    bounded: 1 // Restringir búsqueda dentro de la caja delimitadora
+                }
+            });
+
+            var geocoderControl = L.Control.geocoder({
+                query: '',
+                placeholder: 'Buscar en Cochabamba...',
+                geocoder: geocoder,
+                defaultMarkGeocode: false // Evita la creación del marcador predeterminado
+            }).addTo(map);
+
+            var currentMarker; // Variable para almacenar el marcador actual
+
+            // Manejador del evento markgeocode para personalizar el marcador
+            geocoderControl.on('markgeocode', function (e) {
+                var latlng = e.geocode.center;
+
+                // Si ya hay un marcador en el mapa, eliminarlo
+                if (currentMarker) {
+                    map.removeLayer(currentMarker);
+                }
+
+                // Añadir un nuevo punto rojo en lugar del marcador predeterminado
+                currentMarker = L.circleMarker(latlng, {
+                    radius: 10,
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.8
+                }).addTo(map);
+
+                // Mover la vista al nuevo marcador
+                map.setView(latlng, 15);
+
+                // Mostrar un popup sobre la ubicación encontrada con solo el nombre sin detalles
+                currentMarker.bindPopup("Ubicación encontrada: " + e.geocode.name.split(',')[0]).openPopup();
+            });
+        });
+    </script>
+
+
+</body>
+</html>

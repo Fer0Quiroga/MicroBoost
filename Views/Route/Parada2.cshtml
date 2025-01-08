@@ -1,0 +1,351 @@
+﻿@model List<ProyectoControlLineaBus.Models.MuestraRutasMapas>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>@ViewBag.Title</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-success,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            font-weight: bold;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-primary {
+            font-weight: bold;
+            background-color: rgba(0, 123, 255, 0.7);
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+        #map {
+            height: 400px;
+            width: 50%;
+        }
+
+        .time-fields {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+            .time-fields select {
+                width: 70px;
+                margin-right: 5px;
+            }
+
+        .colon {
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        .time-label {
+            margin-right: 10px;
+        }
+
+        .geocoder {
+            display: block;
+            width: 100%;
+            z-index: 22;
+        }
+
+        .leaflet-control-geocoder-form input {
+            color: black !important;
+            font-weight: bold;
+            background-color: white;
+            border: 1px solid black;
+        }
+
+        .leaflet-control-geocoder-alternatives li:hover {
+            color: gray !important;
+            background-color: #f0f0f0;
+        }
+
+        .leaflet-control-geocoder-alternatives li a {
+            color: #495057 !important;
+        }
+
+        .leaflet-control-geocoder-alternatives li:hover a {
+            color: black !important;
+        }
+
+        .leaflet-control-geocoder-alternatives li {
+            color: black !important;
+        }
+
+        .leaflet-control-geocoder-form input:focus {
+            outline: none;
+            border-color: black !important;
+            box-shadow: none;
+        }
+        #map {
+            height: 400px; 
+            width: 100%; 
+        }
+    </style>
+</head>
+<body>
+    <div class="mt-4 text-center">
+        <h1>REGISTRAR PARADA PRINCIPAL 2 RUTA @ViewBag.numTypeRoute</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div style="font-size:17px; font-weight:bold; margin-top:2%">Haga click en el mapa para marcar la nueva ubicación de la parada</div>
+            <div id="map"></div>
+        </div>
+        <div id="streetNames" class="col-md-6">
+            <div style="font-size:18px; font-weight:bold; margin-top:2%; margin-bottom:2%">Los tiempos deben ser marcados teniendo en cuenta que parte desde la ruta 1</div>
+            <form id="ubicacionesForm" action="@Url.Action("Parada2", "Route")" method="post">
+                <div class="form-group">
+                    <div class="time-fields">
+                        <label for="hora" class="time-label">Hora:</label>
+                        @Html.DropDownList("hora", (SelectList)ViewBag.Hours, new { @class = "form-control form-control-lg font-weight-bold" })
+                        <span class="colon">:</span>
+                        @Html.DropDownList("minuto", (SelectList)ViewBag.Minutes, new { @class = "form-control form-control-lg font-weight-bold" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="time-fields">
+                        <label for="horaMercado" class="time-label">Hora de Feria:</label>
+                        @Html.DropDownList("horaMercado", (SelectList)ViewBag.Hours2, new { @class = "form-control form-control-lg font-weight-bold" })
+                        <span class="colon">:</span>
+                        @Html.DropDownList("minutoMercado", (SelectList)ViewBag.Minutes2, new { @class = "form-control form-control-lg font-weight-bold" })
+                    </div>
+                </div>
+                <h3>Nueva ubicación:</h3>
+                <ul id="streetList"></ul>
+                <input type="hidden" id="ubicaciones" name="ubicaciones" />
+                <button type="button" id="enviarUbicacionesBtn" class="btn btn-primary mt-3">Registrar ubicación</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <script>
+
+        var map = L.map('map').setView([-17.3935, -66.1570], 15);
+
+
+        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ', {
+            maxZoom: 19,
+            tileSize: 512,
+            zoomOffset: -1,
+        }).addTo(map);
+
+
+        var colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A8', '#FF8F33'];
+        var geocoder = L.Control.Geocoder.nominatim({
+            geocodingQueryParams: {
+                countrycodes: 'BO',
+                viewbox: '-66.3,-17.6,-65.9,-17.2',
+                bounded: 1
+            }
+        });
+        var geocoderControl = L.Control.geocoder({
+            query: '',
+            placeholder: 'Buscar en Cochabamba...',
+            geocoder: geocoder,
+            defaultMarkGeocode: false
+        }).addTo(map);
+
+        var currentMarker;
+
+
+        geocoderControl.on('markgeocode', function (e) {
+            var latlng = e.geocode.center;
+
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+            }
+
+            currentMarker = L.circleMarker(latlng, {
+                radius: 10,
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.8
+            }).addTo(map);
+
+            map.setView(latlng, 15);
+            currentMarker.bindPopup("Ubicación encontrada: " + e.geocode.name.split(',')[0]).openPopup();
+        });
+        var allRoutesGroup = L.featureGroup();
+
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <text>
+            var routePoints = [];
+
+            @foreach (var ruta in Model[i].ListRutasMostrar)
+            {
+                @:routePoints.push([@ruta.latitud, @ruta.longitud]);
+            }
+
+
+            var color = colors[@i];
+
+
+            var polyline = L.polyline(routePoints, {
+                color: color,
+                weight: 5,
+                opacity: 0.8,
+                smoothFactor: 1
+            }).addTo(allRoutesGroup);
+
+            L.polyline(routePoints, {
+                color: 'black',
+                weight: 6,
+                opacity: 0.6,
+                smoothFactor: 1
+            }).addTo(allRoutesGroup);
+
+            if (routePoints.length > 0) {
+                var startIcon = L.divIcon({
+                    className: 'custom-start-icon',
+                    html: '<div style="background-color: green; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+
+                var endIcon = L.divIcon({
+                    className: 'custom-end-icon',
+                    html: '<div style="background-color: red; width: 30px; height: 30px; border-radius: 50%; border: 2px solid black;"></div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+
+                L.marker(routePoints[0], { icon: startIcon }).addTo(allRoutesGroup).bindPopup("Inicio Ruta " + (@i + 1));
+                L.marker(routePoints[routePoints.length - 1], { icon: endIcon }).addTo(allRoutesGroup).bindPopup("Fin Ruta " + (@i + 1));
+            }
+
+            @foreach (var parada in Model[i].ListParadasMostrar)
+            {
+                @:L.marker([@parada.latitud, @parada.longitud])
+                @:.bindPopup('@parada.description')
+                @:.addTo(allRoutesGroup);
+            }
+            </text>
+        }
+
+
+        if (allRoutesGroup.getBounds().length > 0) {
+            map.addLayer(allRoutesGroup);
+            map.fitBounds(allRoutesGroup.getBounds());
+        } else {
+            console.warn('No hay rutas o paradas disponibles en el grupo.');
+        }
+
+        var currentMarker = null;
+
+
+        map.on('click', function (e) {
+            var latlng = e.latlng;
+            var lat = latlng.lat;
+            var lng = latlng.lng;
+
+            var geocodeURL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ`;
+
+            fetch(geocodeURL)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.features && data.features.length > 0) {
+                        var streetName = data.features[0].text || 'No se pudo obtener la calle';
+
+                        if (currentMarker) {
+                            map.removeLayer(currentMarker);
+                        }
+
+                        currentMarker = L.marker([lat, lng]).addTo(map);
+
+                        var streetList = document.getElementById('streetList');
+                        streetList.innerHTML = `Calle: ${streetName}`;
+
+                        var ubicacionesInput = document.getElementById('ubicaciones');
+                        ubicacionesInput.value = `${streetName}/${lat}/${lng}`;
+                    } else {
+                        console.error('No se encontraron resultados en la geocodificación inversa.');
+                    }
+                })
+                .catch(error => console.error('Error en la geocodificación inversa:', error));
+        });
+
+        document.getElementById('enviarUbicacionesBtn').addEventListener('click', function () {
+            document.getElementById('ubicacionesForm').submit();
+        });
+
+    </script>
+
+</body>
+</html>

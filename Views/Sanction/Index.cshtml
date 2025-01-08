@@ -1,0 +1,259 @@
+﻿@model IEnumerable<ProyectoControlLineaBus.Models.Sanction>
+
+@{
+    ViewBag.Title = "Index";
+}
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <title>Menú de Sanciones</title>
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            font-weight: bold
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            font-weight: bold;
+        }
+
+        .btn-info {
+            background-color: #006a78;
+            border-color: #006a78;
+            font-weight: bold;
+        }
+
+        .btn-warning {
+            background-color: #5c5c00;
+            border-color: #5c5c00;
+            font-weight: bold;
+        }
+
+        .modal-custom {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content-custom, .modal-content {
+            background-color: #242943;
+            color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-header {
+            border-bottom: none;
+        }
+
+        .modal-footer {
+            border-top: none;
+            justify-content: center;
+        }
+
+        .close-custom, .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: white;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        .dropdown-item {
+            color: black !important;
+            font-weight: bold !important;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        #fallaMecanica {
+            font-weight: bold;
+        }
+
+            #fallaMecanica option {
+                font-weight: bold;
+            }
+
+        .dropdown-item:hover {
+            background-color: #343a40;
+            color: white !important;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #343a40;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        .table th, .table td {
+            padding: 10px;
+        }
+
+        .table th, .table td {
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div style="margin-top:5%"></div>
+
+    <h2 class="text-center">Sanciones</h2>
+    <div class="row mb-3">
+        <div class="col-md-2 mb-2">
+            @Html.ActionLink("Volver", "Index", "Employee", "", new { @class = "btn btn-outline-primary" })
+        </div>
+        <div class="col-4 mb-2">
+            @Html.ActionLink("Crear Nueva Sanción", "Create", "", new { @class = "btn btn-outline-info" })
+        </div>
+    </div>
+    <table class="table text-white">
+        <tr>
+            <th class="text-center">
+                Titulo
+            </th>
+            <th class="text-center">
+                Descripción
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center">
+                    @Html.DisplayFor(modelItem => item.title)
+                </td>
+                <td class="text-center">
+                    @Html.DisplayFor(modelItem => item.description)
+                </td>
+
+                <td>
+                    <a href="#" class="btn btn-danger mb-2" onclick="abrirModalEliminarChofer(event, '@item.title', '@item.idSanction')">Eliminar</a>
+                </td>
+            </tr>
+        }
+
+    </table>
+    <div id="modal-eliminacionChofer" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalEliminarChoferLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEliminarChoferLabel">¿Estás seguro?</h5>
+                    <button type="button" class="close" onclick="cerrarModal('modal-eliminacionChofer')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Se eliminará la siguiente sanción: <label id="nameChofer"></label></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-eliminacionChofer')">CANCELAR</button>
+                    <a id="confirmDeleteChofer" href="#" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function abrirModalEliminarChofer(event, name, idEmployee) {
+            event.preventDefault();
+            document.getElementById('nameChofer').innerText = name;
+            document.getElementById('confirmDeleteChofer').setAttribute('href', '@Url.Action("Delete", "Sanction")/' + idEmployee);
+            $('#modal-eliminacionChofer').modal('show');
+        }
+        function cerrarModal(idModal) {
+            $('#' + idModal).modal('hide');
+        }
+    </script>
+</body>

@@ -1,0 +1,552 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MicroBusPModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Checkpoint">
+    <Key>
+      <PropertyRef Name="idCheckpoint" />
+    </Key>
+    <Property Name="idCheckpoint" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="idLine" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="status" Type="Int32" Nullable="false" />
+    <Property Name="idEmployee" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+    <Property Name="latitud" Type="Decimal" Precision="22" Scale="19" Nullable="false" />
+    <Property Name="longitud" Type="Decimal" Precision="22" Scale="19" Nullable="false" />
+    <Property Name="numberRoute" Type="Int32" />
+    <Property Name="minArrival" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="minArrivalMarket" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Line" Relationship="Self.FK_Checkpoint_Line" FromRole="Checkpoint" ToRole="Line" />
+    <NavigationProperty Name="Person" Relationship="Self.FK_Checkpoint_Person" FromRole="Checkpoint" ToRole="Person" />
+    <NavigationProperty Name="TimeControl" Relationship="Self.FK_TimeControl_Checkpoint" FromRole="Checkpoint" ToRole="TimeControl" />
+  </EntityType>
+  <EntityType Name="DeviationRote">
+    <Key>
+      <PropertyRef Name="idDeviation" />
+    </Key>
+    <Property Name="idDeviation" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idRouteStart" Type="Int32" Nullable="false" />
+    <Property Name="idRouteEnd" Type="Int32" Nullable="false" />
+    <Property Name="numberRoute" Type="Int32" />
+    <Property Name="idLine" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="numTypeRoute" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="idEmployee" />
+    </Key>
+    <Property Name="idEmployee" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="salary" Type="Decimal" Precision="6" Scale="2" />
+    <Property Name="status" Type="Int32" />
+    <Property Name="dateRegister" Type="DateTime" Precision="3" />
+    <Property Name="plate" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="idLine" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="enabled" Type="Int32" />
+    <NavigationProperty Name="Line" Relationship="Self.FK_Employee_Line" FromRole="Employee" ToRole="Line" />
+    <NavigationProperty Name="Person" Relationship="Self.FK_Employee_Person" FromRole="Employee" ToRole="Person" />
+    <NavigationProperty Name="MechanicalFailures" Relationship="Self.FK_MechanicalFailures_Employee" FromRole="Employee" ToRole="MechanicalFailures" />
+    <NavigationProperty Name="Report" Relationship="Self.FK_Report_Employee" FromRole="Employee" ToRole="Report" />
+    <NavigationProperty Name="SanctionEmployee" Relationship="Self.FK_SanctionEmployee_Employee" FromRole="Employee" ToRole="SanctionEmployee" />
+    <NavigationProperty Name="Star" Relationship="Self.FK_Star_Employee" FromRole="Employee" ToRole="Star" />
+    <NavigationProperty Name="TimeControl" Relationship="Self.FK_TimeControl_Employee1" FromRole="Employee" ToRole="TimeControl" />
+    <NavigationProperty Name="User" Relationship="Self.FK_User_Employee" FromRole="Employee" ToRole="User" />
+  </EntityType>
+  <EntityType Name="Line">
+    <Key>
+      <PropertyRef Name="nameLine" />
+    </Key>
+    <Property Name="nameLine" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="price" Type="Decimal" Precision="3" Scale="2" Nullable="false" />
+    <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="idAdmin" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Checkpoint" Relationship="Self.FK_Checkpoint_Line" FromRole="Line" ToRole="Checkpoint" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_Employee_Line" FromRole="Line" ToRole="Employee" />
+    <NavigationProperty Name="Owner" Relationship="Self.FK_Owner_Line" FromRole="Line" ToRole="Owner" />
+    <NavigationProperty Name="Route" Relationship="Self.FK_Route_Line" FromRole="Line" ToRole="Route" />
+    <NavigationProperty Name="Sanction" Relationship="Self.FK_Sanction_Line" FromRole="Line" ToRole="Sanction" />
+  </EntityType>
+  <EntityType Name="MechanicalFailures">
+    <Key>
+      <PropertyRef Name="idMechanicalFailutes" />
+    </Key>
+    <Property Name="idMechanicalFailutes" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="plate" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="description" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+    <Property Name="idEmployee" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+    <Property Name="dateRegister" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_MechanicalFailures_Employee" FromRole="MechanicalFailures" ToRole="Employee" />
+  </EntityType>
+  <EntityType Name="Owner">
+    <Key>
+      <PropertyRef Name="idOwner" />
+    </Key>
+    <Property Name="idLine" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="idPerson" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="doc" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="idOwner" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <NavigationProperty Name="Line" Relationship="Self.FK_Owner_Line" FromRole="Owner" ToRole="Line" />
+    <NavigationProperty Name="Person" Relationship="Self.FK_Owner_Person" FromRole="Owner" ToRole="Person" />
+  </EntityType>
+  <EntityType Name="Person">
+    <Key>
+      <PropertyRef Name="nit" />
+    </Key>
+    <Property Name="nit" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="lastname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="status" Type="Int32" />
+    <Property Name="dateRegister" Type="DateTime" Precision="3" />
+    <Property Name="idRole" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Checkpoint" Relationship="Self.FK_Checkpoint_Person" FromRole="Person" ToRole="Checkpoint" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_Employee_Person" FromRole="Person" ToRole="Employee" />
+    <NavigationProperty Name="Owner" Relationship="Self.FK_Owner_Person" FromRole="Person" ToRole="Owner" />
+  </EntityType>
+  <EntityType Name="Place">
+    <Key>
+      <PropertyRef Name="idPlace" />
+    </Key>
+    <Property Name="idPlace" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Route" Relationship="Self.FK_Route_Place" FromRole="Place" ToRole="Route" />
+  </EntityType>
+  <EntityType Name="Report">
+    <Key>
+      <PropertyRef Name="idReport" />
+    </Key>
+    <Property Name="idReport" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idEmployee" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+    <Property Name="description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dateRegister" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_Report_Employee" FromRole="Report" ToRole="Employee" />
+  </EntityType>
+  <EntityType Name="Route">
+    <Key>
+      <PropertyRef Name="idRoute" />
+    </Key>
+    <Property Name="idLine" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="idPlace" Type="Int32" Nullable="false" />
+    <Property Name="idRoute" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="latitud" Type="Decimal" Precision="22" Scale="19" Nullable="false" />
+    <Property Name="logintud" Type="Decimal" Precision="22" Scale="19" Nullable="false" />
+    <Property Name="numberRoute" Type="Int32" />
+    <Property Name="status" Type="Int32" />
+    <Property Name="numPoint" Type="Int32" />
+    <Property Name="numTypeRoute" Type="Int32" />
+    <NavigationProperty Name="Line" Relationship="Self.FK_Route_Line" FromRole="Route" ToRole="Line" />
+    <NavigationProperty Name="Place" Relationship="Self.FK_Route_Place" FromRole="Route" ToRole="Place" />
+  </EntityType>
+  <EntityType Name="Sanction">
+    <Key>
+      <PropertyRef Name="idSanction" />
+    </Key>
+    <Property Name="idSanction" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="title" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="idLine" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="status" Type="Int32" />
+    <NavigationProperty Name="Line" Relationship="Self.FK_Sanction_Line" FromRole="Sanction" ToRole="Line" />
+    <NavigationProperty Name="SanctionEmployee" Relationship="Self.FK_SanctionEmployee_Sanction" FromRole="Sanction" ToRole="SanctionEmployee" />
+  </EntityType>
+  <EntityType Name="SanctionEmployee">
+    <Key>
+      <PropertyRef Name="idSanctionEmployee" />
+    </Key>
+    <Property Name="idSanctionEmployee" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idSanction" Type="Int32" />
+    <Property Name="idEmployee" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+    <Property Name="dateRegister" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_SanctionEmployee_Employee" FromRole="SanctionEmployee" ToRole="Employee" />
+    <NavigationProperty Name="Sanction" Relationship="Self.FK_SanctionEmployee_Sanction" FromRole="SanctionEmployee" ToRole="Sanction" />
+  </EntityType>
+  <EntityType Name="Star">
+    <Key>
+      <PropertyRef Name="idStar" />
+    </Key>
+    <Property Name="idStar" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idEmployee" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+    <Property Name="numStar" Type="Int32" />
+    <Property Name="dateRegister" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_Star_Employee" FromRole="Star" ToRole="Employee" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="TimeControl">
+    <Key>
+      <PropertyRef Name="idTimeControl" />
+    </Key>
+    <Property Name="idTimeControl" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idEmployee" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="idCheckpoint" Type="Int32" Nullable="false" />
+    <Property Name="dateRegister" Type="DateTime" Precision="3" />
+    <Property Name="plate" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="enable" Type="Int32" />
+    <Property Name="numTicket" Type="Int32" />
+    <NavigationProperty Name="Checkpoint" Relationship="Self.FK_TimeControl_Checkpoint" FromRole="TimeControl" ToRole="Checkpoint" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_TimeControl_Employee1" FromRole="TimeControl" ToRole="Employee" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="idEmployee" />
+    </Key>
+    <Property Name="idEmployee" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="username" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="firstEntry" Type="Int32" Nullable="false" />
+    <Property Name="email" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_User_Employee" FromRole="User" ToRole="Employee" />
+  </EntityType>
+  <Association Name="FK_Checkpoint_Line">
+    <End Role="Line" Type="Self.Line" Multiplicity="1" />
+    <End Role="Checkpoint" Type="Self.Checkpoint" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Line">
+        <PropertyRef Name="nameLine" />
+      </Principal>
+      <Dependent Role="Checkpoint">
+        <PropertyRef Name="idLine" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Checkpoint_Person">
+    <End Role="Person" Type="Self.Person" Multiplicity="0..1" />
+    <End Role="Checkpoint" Type="Self.Checkpoint" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="nit" />
+      </Principal>
+      <Dependent Role="Checkpoint">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TimeControl_Checkpoint">
+    <End Role="Checkpoint" Type="Self.Checkpoint" Multiplicity="1" />
+    <End Role="TimeControl" Type="Self.TimeControl" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Checkpoint">
+        <PropertyRef Name="idCheckpoint" />
+      </Principal>
+      <Dependent Role="TimeControl">
+        <PropertyRef Name="idCheckpoint" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Employee_Line">
+    <End Role="Line" Type="Self.Line" Multiplicity="0..1" />
+    <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Line">
+        <PropertyRef Name="nameLine" />
+      </Principal>
+      <Dependent Role="Employee">
+        <PropertyRef Name="idLine" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Employee_Person">
+    <End Role="Person" Type="Self.Person" Multiplicity="1" />
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="nit" />
+      </Principal>
+      <Dependent Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MechanicalFailures_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="MechanicalFailures" Type="Self.MechanicalFailures" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="MechanicalFailures">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Report_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="Report" Type="Self.Report" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="Report">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SanctionEmployee_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="SanctionEmployee" Type="Self.SanctionEmployee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="SanctionEmployee">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Star_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="Star" Type="Self.Star" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="Star">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TimeControl_Employee1">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
+    <End Role="TimeControl" Type="Self.TimeControl" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="TimeControl">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_User_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Owner_Line">
+    <End Role="Line" Type="Self.Line" Multiplicity="1" />
+    <End Role="Owner" Type="Self.Owner" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Line">
+        <PropertyRef Name="nameLine" />
+      </Principal>
+      <Dependent Role="Owner">
+        <PropertyRef Name="idLine" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Route_Line">
+    <End Role="Line" Type="Self.Line" Multiplicity="1" />
+    <End Role="Route" Type="Self.Route" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Line">
+        <PropertyRef Name="nameLine" />
+      </Principal>
+      <Dependent Role="Route">
+        <PropertyRef Name="idLine" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Sanction_Line">
+    <End Role="Line" Type="Self.Line" Multiplicity="0..1" />
+    <End Role="Sanction" Type="Self.Sanction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Line">
+        <PropertyRef Name="nameLine" />
+      </Principal>
+      <Dependent Role="Sanction">
+        <PropertyRef Name="idLine" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Owner_Person">
+    <End Role="Person" Type="Self.Person" Multiplicity="1" />
+    <End Role="Owner" Type="Self.Owner" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="nit" />
+      </Principal>
+      <Dependent Role="Owner">
+        <PropertyRef Name="idPerson" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Route_Place">
+    <End Role="Place" Type="Self.Place" Multiplicity="1" />
+    <End Role="Route" Type="Self.Route" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Place">
+        <PropertyRef Name="idPlace" />
+      </Principal>
+      <Dependent Role="Route">
+        <PropertyRef Name="idPlace" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SanctionEmployee_Sanction">
+    <End Role="Sanction" Type="Self.Sanction" Multiplicity="0..1" />
+    <End Role="SanctionEmployee" Type="Self.SanctionEmployee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sanction">
+        <PropertyRef Name="idSanction" />
+      </Principal>
+      <Dependent Role="SanctionEmployee">
+        <PropertyRef Name="idSanction" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="dbModels" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Checkpoint" EntityType="Self.Checkpoint" />
+    <EntitySet Name="DeviationRote" EntityType="Self.DeviationRote" />
+    <EntitySet Name="Employee" EntityType="Self.Employee" />
+    <EntitySet Name="Line" EntityType="Self.Line" />
+    <EntitySet Name="MechanicalFailures" EntityType="Self.MechanicalFailures" />
+    <EntitySet Name="Owner" EntityType="Self.Owner" />
+    <EntitySet Name="Person" EntityType="Self.Person" />
+    <EntitySet Name="Place" EntityType="Self.Place" />
+    <EntitySet Name="Report" EntityType="Self.Report" />
+    <EntitySet Name="Route" EntityType="Self.Route" />
+    <EntitySet Name="Sanction" EntityType="Self.Sanction" />
+    <EntitySet Name="SanctionEmployee" EntityType="Self.SanctionEmployee" />
+    <EntitySet Name="Star" EntityType="Self.Star" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="TimeControl" EntityType="Self.TimeControl" />
+    <EntitySet Name="User" EntityType="Self.User" />
+    <AssociationSet Name="FK_Checkpoint_Line" Association="Self.FK_Checkpoint_Line">
+      <End Role="Line" EntitySet="Line" />
+      <End Role="Checkpoint" EntitySet="Checkpoint" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Checkpoint_Person" Association="Self.FK_Checkpoint_Person">
+      <End Role="Person" EntitySet="Person" />
+      <End Role="Checkpoint" EntitySet="Checkpoint" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TimeControl_Checkpoint" Association="Self.FK_TimeControl_Checkpoint">
+      <End Role="Checkpoint" EntitySet="Checkpoint" />
+      <End Role="TimeControl" EntitySet="TimeControl" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Employee_Line" Association="Self.FK_Employee_Line">
+      <End Role="Line" EntitySet="Line" />
+      <End Role="Employee" EntitySet="Employee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Employee_Person" Association="Self.FK_Employee_Person">
+      <End Role="Person" EntitySet="Person" />
+      <End Role="Employee" EntitySet="Employee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MechanicalFailures_Employee" Association="Self.FK_MechanicalFailures_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="MechanicalFailures" EntitySet="MechanicalFailures" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Report_Employee" Association="Self.FK_Report_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="Report" EntitySet="Report" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SanctionEmployee_Employee" Association="Self.FK_SanctionEmployee_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="SanctionEmployee" EntitySet="SanctionEmployee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Star_Employee" Association="Self.FK_Star_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="Star" EntitySet="Star" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TimeControl_Employee1" Association="Self.FK_TimeControl_Employee1">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="TimeControl" EntitySet="TimeControl" />
+    </AssociationSet>
+    <AssociationSet Name="FK_User_Employee" Association="Self.FK_User_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="User" EntitySet="User" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Owner_Line" Association="Self.FK_Owner_Line">
+      <End Role="Line" EntitySet="Line" />
+      <End Role="Owner" EntitySet="Owner" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Route_Line" Association="Self.FK_Route_Line">
+      <End Role="Line" EntitySet="Line" />
+      <End Role="Route" EntitySet="Route" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Sanction_Line" Association="Self.FK_Sanction_Line">
+      <End Role="Line" EntitySet="Line" />
+      <End Role="Sanction" EntitySet="Sanction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Owner_Person" Association="Self.FK_Owner_Person">
+      <End Role="Person" EntitySet="Person" />
+      <End Role="Owner" EntitySet="Owner" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Route_Place" Association="Self.FK_Route_Place">
+      <End Role="Place" EntitySet="Place" />
+      <End Role="Route" EntitySet="Route" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SanctionEmployee_Sanction" Association="Self.FK_SanctionEmployee_Sanction">
+      <End Role="Sanction" EntitySet="Sanction" />
+      <End Role="SanctionEmployee" EntitySet="SanctionEmployee" />
+    </AssociationSet>
+    <FunctionImport Name="prcCreateChofer">
+      <Parameter Name="Nit" Mode="In" Type="String" />
+      <Parameter Name="Salary" Mode="In" Type="Decimal" />
+      <Parameter Name="Plate" Mode="In" Type="String" />
+      <Parameter Name="Linea" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_alterdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_creatediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_dropdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(MicroBusPModel.sp_helpdiagramdefinition_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(MicroBusPModel.sp_helpdiagrams_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_renamediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="new_diagramname" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_upgraddiagrams" />
+    <FunctionImport Name="UltCheckpoint" ReturnType="Collection(MicroBusPModel.UltCheckpoint_Result)">
+      <Parameter Name="Linea" Mode="In" Type="String" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="sp_helpdiagramdefinition_Result">
+    <Property Type="Int32" Name="version" Nullable="true" />
+    <Property Type="Binary" Name="definition" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_helpdiagrams_Result">
+    <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+    <Property Type="Int32" Name="OwnerID" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="UltCheckpoint_Result">
+    <Property Type="String" Name="idEmployee" Nullable="false" MaxLength="16" />
+    <Property Type="String" Name="name" Nullable="false" MaxLength="101" />
+    <Property Type="Int32" Name="idCheckpoint" Nullable="false" />
+    <Property Type="DateTime" Name="dateRegister" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="status" Nullable="false" />
+  </ComplexType>
+</Schema>

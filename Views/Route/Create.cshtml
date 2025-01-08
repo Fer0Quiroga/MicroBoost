@@ -1,0 +1,76 @@
+﻿@model ProyectoControlLineaBus.Models.MuestraRoute
+
+@{
+    ViewBag.Title = "Create";
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+</head>
+<div style="margin-top:5%"></div>
+<style>
+    input, select, textarea {
+        max-width: 340px;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h2 class="text-center">Crear Ruta</h2>
+    <div>
+        @Html.ActionLink("Volver", "Index", "Route", "", new { @class = "btn btn-outline-primary" })
+    </div>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class=" row">
+        <div class="col-md-3"></div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.extention, htmlAttributes: new { @class = "control-label col-md-10" })
+            <div class="col-md-12">
+                @Html.DropDownListFor(model => model.extention, new SelectList(new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Calle", Value = "Calle" },
+                    new SelectListItem { Text = "Avenida", Value = "Avenida" }
+                }, "Value", "Text"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.extention, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group col">
+            @Html.LabelFor(model => model.descriptionPlace, htmlAttributes: new { @class = "control-label col-md-10" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.descriptionPlace, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.descriptionPlace, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-md-3"></div>
+        <div class="form-group col">
+            @Html.LabelFor(model => model.latitud_longitud, htmlAttributes: new { @class = "control-label col-md-10" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.latitud_longitud, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.latitud_longitud, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5"></div>
+        <div class="form-group col">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Registrar" class="btn btn-success mt-3" />
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

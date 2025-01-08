@@ -1,0 +1,981 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" />
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .scrollable-table {
+            max-height: 150px;
+            overflow-y: auto;
+            display: block;
+            width: 100%;
+        }
+
+            .scrollable-table table {
+                width: 100%;
+            }
+
+            .scrollable-table::-webkit-scrollbar {
+                width: 10px;
+            }
+
+            .scrollable-table::-webkit-scrollbar-thumb {
+                background-color: #333;
+                border-radius: 5px;
+            }
+
+            .scrollable-table::-webkit-scrollbar-track {
+                background-color: #111;
+            }
+
+        tbody tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+
+        header#header {
+            margin-top: 0;
+            margin-bottom: 0;
+            height: auto;
+        }
+
+        #banner.major {
+            margin-top: 0;
+            padding-top: 0;
+            height: auto;
+        }
+
+            #banner.major .inner {
+                margin-top: 0;
+            }
+
+        .selector-container {
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            font-weight:bold;
+
+        }
+
+        #selector-origen {
+            z-index: 20;
+        }
+
+        #menu-origen {
+            z-index: 21;
+        }
+
+        #selector-destino {
+            z-index: 15;
+        }
+
+        .selector {
+            background-color: #242943;
+            color: white;
+            border: solid;
+            border-color: rgba(23, 162, 184, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+            .selector:hover {
+                background-color: #17a2b8;
+                color: white;
+            }
+        #map {
+            height: 380px;
+            width: 55%;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+            z-index: 0;
+            margin-bottom: 1%;
+            margin-top: 2%;
+        }
+
+        .inicio {
+            margin-top: 2%;
+            margin-left: 15%;
+            font-weight: bold;
+        }
+
+
+        .dropdown-menu {
+            display: none;
+            background-color: white;
+            color: black;
+            position: absolute;
+            border: 1px solid #888;
+            width: 100%;
+            top: 100%;
+            left: 0;
+            z-index: 25;
+        }
+
+            .dropdown-menu div {
+                padding: 10px;
+                cursor: pointer;
+            }
+
+                .dropdown-menu div:hover {
+                    background-color: #eee;
+                }
+
+        .geocoder {
+            display: block;
+            width: 100%;
+            z-index: 22;
+        }
+
+        .leaflet-control-geocoder-form input {
+            color: black !important;
+            background-color: white;
+            border: 1px solid black;
+            font-weight: bold;
+        }
+        .leaflet-control-geocoder-alternatives li:hover a {
+            color: black !important;
+        }
+
+        .leaflet-control-geocoder-alternatives li {
+            color: black !important;
+        }
+        .leaflet-control-geocoder-form input:focus {
+            outline: none;
+            border-color: black !important;
+            box-shadow: none;
+        }
+
+        .inicios {
+            margin-left: 15%;
+            margin-bottom: 2%
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2;
+            padding-top: 60px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #242943;
+            z-index: 50;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+
+
+        @@media (max-width: 768px) {
+
+            header#header {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+
+            #banner.major {
+                margin-top: 0;
+                padding-top: 0;
+            }
+
+            #map {
+                height: 380px;
+                width: 95%;
+                margin: 0 auto;
+                margin-bottom: 5%;
+                overflow: hidden;
+                position: relative;
+                z-index: 0;
+                margin-top: 0%;
+            }
+
+            .selector {
+                background-color: #242943;
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                text-align: center;
+                width: 90%;
+            }
+
+            .inicio {
+                margin-top: 5%;
+                margin-left: 0%;
+            }
+
+            .inicios {
+                margin-left: 0%;
+                margin-bottom: 0%
+            }
+        }
+        #locate-btn {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background-color: black;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: black;
+            box-shadow: 0px 4px 6px rgba(0, 0,0)
+        }
+
+        @@media (max-width: 768px) {
+            .selector {
+                width: 90%;
+            }
+        }
+        .container-fluid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+            .logo strong {
+                margin-right: 10px;
+                font-weight: bold;
+                color: #ffffff;
+            }
+
+        .logo-image {
+            vertical-align: middle;
+            left: 0;
+        }
+
+    </style>
+</head>
+<body class="is-preload">
+    <div id="wrapper">
+        <header id="header" class="alt">
+            <a href="~/Home/Index" class="logo">
+                <strong>
+                    MicroBoost
+                    <img src="~/images/micro.png" alt="Microboost logo" class="logo-image" />
+                </strong>
+
+            </a>
+            <nav>
+                <a href="#menu">Menu</a>
+            </nav>
+        </header>
+
+        <!-- Menu -->
+        <nav id="menu">
+            <ul class="links">
+                <li><a href="~/Home/Index">Inicio</a></li>
+                <li><a href="~/Line/ViewAllLines">Ver todas las líneas</a></li>
+                @if (ViewBag.RoleSession != null)
+                {
+                    if (ViewBag.RoleSession.ToString() == "4")
+                    {
+                        @*<li><a href="~/Person/Index">Gestión de Dueños</a></li>*@
+                        @*<li><a href="~/Line/Index">Gestión de Líneas</a></li>*@
+                        @*<li><a href="~/Employee/DriverQR">Generar QR</a></li>*@
+                    }
+                    if (ViewBag.RoleSession.ToString() == "3")
+                    {
+                        <li><a href="~/Line/Edit">Actualizar Información</a></li>
+                        <li><a href="~/Employee">Administrar Empleados</a></li>
+                        <li><a href="~/Route">Administrar Rutas</a></li>
+                    }
+                    if (ViewBag.RoleSession.ToString() == "2")
+                    {
+                        @* <li><a href="~/TimeControl/Index">Control</a></li>*@
+                    }
+                    if (ViewBag.RoleSession.ToString() == "1")
+                    {
+                        <li><a href="~/Chofer/ViewRuta1">Ver Ruta 1</a></li>
+                        <li><a href="~/Chofer/ViewRuta2">Ver Ruta 2</a></li>
+                        <li><a href="~/Chofer/ViewRutas">Ver Rutas</a></li>
+                        <li><a href="~/NewReport/ReportChoferView">Ver Reportes</a></li>
+                    }
+                    <li><a class="button fit" href="~/Home/CloseSession">Cerrar Sesión</a></li>
+
+                }
+                else
+                {
+                    <li><a class="button fit" href="~/Login/Index">Iniciar Sesión</a></li>
+                }
+
+            </ul>
+        </nav>
+
+        <!-- Banner -->
+        <section id="banner" class="major">
+            <div class="inner">
+                <header class="major">
+                </header>
+                <div class="inicio">Buscador  </div>
+                <div class="inicios">Selecciona la ubicacion de origen y la ubicacion de destino para buscar su ruta adecuada</div>
+                <div class="container-fluid d-flex justify-content-center align-items-center">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="selector-container">
+                                <div class="selector btn-outline-info" id="selector-origen" onclick="toggleMenu('menu-origen')">Seleccionar origen</div>
+                                <div class="dropdown-menu" id="menu-origen">
+                                    <div onclick="setOrigin('Su ubicación')">Su ubicación</div>
+                                    <div onclick="chooseOnMap('origin')">Elegir en el mapa</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="selector-container">
+                                <div class="selector btn-outline-info" id="selector-destino" onclick="toggleMenu('menu-destino')">Seleccionar destino</div>
+                                <div class="dropdown-menu" id="menu-destino">
+                                    <div onclick="setDestination('Su ubicación')">Su ubicación</div>
+                                    <div onclick="chooseOnMap('destination')">Elegir en el mapa</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div id="map" style="position: relative; height: 380px;">
+                    <button id="locate-btn" style="position: absolute; top: 20%; right: 10px; transform: translateY(-50%); z-index: 1000;">
+                        🧭
+                    </button>
+                </div>
+
+
+
+                <div style="text-align: center;  display: flex; justify-content: center; gap: 5rem; ">
+                    <a onclick="mostrarModal()" class="btn btn-success">Reportar Chofer por QR</a>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Main -->
+        <div id="main">
+            <section id="one" class="tiles">
+                <article>
+                    <span class="image">
+                        <img src="~/images/pic05.jpg" alt="" />
+                    </span>
+                    <header class="major">
+                        <h3><a href="~/Line/ViewAllLines" class="link">Ver Todas las Líneas</a></h3>
+                        <p>Podrás ver las rutas de todas las líneas de Cochaba,ba</p>
+                    </header>
+                </article>
+                <article>
+                    <span class="image">
+                        <img src="~/images/pic01.jpg" alt="" />
+                    </span>
+                    <header class="major">
+                        <h4><a >Precios</a></h4>
+                        <p>Los precios son los siguientes:</p>
+
+
+                        <div class="scrollable-table">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>Mayores</td>
+                                        <td>Bs 1,90</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Adulto Mayor</td>
+                                        <td>Bs 1,50</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Discapacitados</td>
+                                        <td>Bs 1,50</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Universitarios</td>
+                                        <td>Bs 0,80</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Estudiantes primaria</td>
+                                        <td>Bs 0,50</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Secundaria</td>
+                                        <td>Bs 0,50</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Beneméritos</td>
+                                        <td>Exento de pago</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Menores de 5 años</td>
+                                        <td>Exento de pago</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        Sin embargo, en algunas ocasiones, esta tarifa no se respeta y se redondea a 2 Bs.
+                    </header>
+                </article>
+                @if (ViewBag.RoleSession != null)
+                {
+                    if (ViewBag.RoleSession.ToString() == "4")
+                    {
+                        <article>
+                            <span class="image">
+                                <img src="~/images/pic05.jpg" alt="" />
+                            </span>
+                            <header class="major">
+                                <h3><a href="~/Person/Index" class="link">Gestión de Dueños</a></h3>
+                                <p>Podrás editar y eliminar dueños</p>
+                            </header>
+                        </article>
+                        <article>
+                            <span class="image">
+                                <img src="~/images/pic01.jpg" alt="" />
+                            </span>
+                            <header class="major">
+                                <h3><a href="~/Line/Index" class="link">Gestión de Líneas</a></h3>
+                                <p>Podrás crear, editar y eliminar líneas</p>
+                            </header>
+                        </article>
+                    }
+                    if (ViewBag.RoleSession.ToString() == "3")
+                    {
+                        <article>
+                            <span class="image">
+                                <img src="~/images/pic05.jpg" alt="" />
+                            </span>
+                            <header class="major">
+                                <h3><a href="~/Line/HomeLine" class="link">Línea</a></h3>
+                                <p>Ve y modifica la información de tu línea</p>
+                            </header>
+                        </article>
+                        <article>
+                            <span class="image">
+                                <img src="~/images/pic02.jpg" alt="" />
+                            </span>
+                            <header class="major">
+                                <h3><a href="~/Report/ReportDay" class="link">Reporte Diario</a></h3>
+                                <p>Gestiona de una mejor forma los tiempos de tus empleados</p>
+                            </header>
+                        </article>
+                        <article>
+                            <span class="image">
+                                <img src="~/images/pic03.jpg" alt="" />
+                            </span>
+                            <header class="major">
+                                <h3><a href="~/Report/ReportRequestDates" class="link">Reporte Fechas</a></h3>
+                                <p>Gestiona de una mejor forma los tiempos de tus empleados entre dos fechas</p>
+                            </header>
+                        </article>
+                    }
+                    if (ViewBag.RoleSession.ToString() == "2")
+                    {
+                        <article>
+                            <span class="image">
+                                <img src="~/images/pic04.jpg" alt="" />
+                            </span>
+                            <header class="major">
+                                <h3><a href="~/TimeControl/Index" class="link">Control</a></h3>
+                                <p>Gestiona el tiempo de los choferes</p>
+                            </header>
+                        </article>
+                    }
+                }
+            </section>
+
+            <!-- Two -->
+            <section id="two">
+                <div class="inner">
+                    <header class="major">
+                        <h2>Descripción</h2>
+                    </header>
+                    <p>
+                        Bienvenido a Microboost, la herramienta perfecta para planificar tus viajes en bus. Nuestra plataforma te ofrece una guía completa y fácil de usar para encontrar las rutas de buses disponibles en tu área. Con Microboost, puedes:
+                        <ul>
+                            <li><b>Buscar Rutas de Buses:</b> Encuentra rápidamente las rutas de buses que necesitas, ya sea por número de línea o destino.</li>
+                            <li><b>Itinerarios Detallados:</b> Accede a horarios y paradas específicas para cada ruta de bus.</li>
+                            <li><b>Mapas Interactivos:</b> Visualiza las rutas en un mapa interactivo que te muestra el recorrido completo del bus.</li>
+                            <li><b>Actualizaciones:</b> Mantente al día con las llegadas y salidas de los buses, así como cualquier cambio en el servicio.</li>
+                        </ul>
+                        Ya sea que viajes diariamente al trabajo, a la escuela, o explores la ciudad, Microboost es tu aliado ideal para moverte en bus de manera eficiente y sin complicaciones. ¡Empieza a planificar tu viaje en bus hoy mismo con nosotros!
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <footer id="footer">
+            <div class="inner">
+                <ul class="copyright">
+                    <li>&copy; MicroBoost</li>
+                    
+                </ul>
+            </div>
+        </footer>
+
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                ESCANEAR QR
+                <b style="color:white; position:absolute; top:5px; right:10px; cursor:pointer" onclick="cerrarModal()">&times</b>
+                <div style="display:flex; justify-content:center">
+                    <a id="btn-scan-qr" href="#">
+                        <img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2017/07/1499401426qr_icon.svg" class="img-fluid text-center" width="175">
+                    </a>
+                    <canvas hidden="" id="qr-canvas" class="img-fluid" style="width:90%; margin: 0 auto"></canvas>
+                </div>
+            </div>
+        </div>
+        <div id="modal-success" class="modal">
+            <div class="modal-content">
+                <h2>Se esta cargando la ruta</h2>
+                <p>Consejo: Pregunte al chofer "¿Hasta donde va maestrito?"</p>
+            </div>
+        </div>
+        <script src="~/assets/js/jquery.min.js"></script>
+        <script src="~/assets/js/jquery.scrolly.min.js"></script>
+        <script src="~/assets/js/jquery.scrollex.min.js"></script>
+        <script src="~/assets/js/browser.min.js"></script>
+        <script src="~/assets/js/breakpoints.min.js"></script>
+        <script src="~/assets/js/util.js"></script>
+        <script src="~/assets/js/main.js"></script>
+        <script src="~/Scripts/qrCode.min.js"></script>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+        <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+        @*<script>
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            var idRole = @ViewBag.RoleSession; // Asegúrate que RoleSession es un número y se pasa correctamente
+
+            if (idRole === 1) {
+                window.location.href = '@Url.Action("Index", "Chofer")';
+            }
+            else if (idRole === 2) {
+                window.location.href = '@Url.Action("OptionsPrincipalControl", "TimeControl")';
+            }
+            else if (idRole === 3) {
+                window.location.href = '@Url.Action("HomeLine", "Line")';
+            }
+            else if (idRole === 4) {
+                window.location.href = '@Url.Action("Create", "Line")';
+            }
+        }, 1000); // Espera de 1 segundo (1000 milisegundos)
+    });
+        </script>*@
+
+
+        <script>
+                            let map;
+                            let currentLocationMarker = null;
+                            let originMarker = null;
+                            let destinationMarker = null;
+                            let selecting = false;
+                            let originCoords = null;
+                            let destinationCoords = null;
+
+                            document.addEventListener('DOMContentLoaded', function () {
+                                map = L.map('map').setView([-17.3935, -66.1570], 15);
+
+                                L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ', {
+                                    maxZoom: 19,
+                                    tileSize: 512,
+                                    zoomOffset: -1,
+                                }).addTo(map);
+
+                                mapboxgl.accessToken = 'pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ';
+
+
+                                var geocoder = L.Control.Geocoder.nominatim({
+                                    geocodingQueryParams: {
+                                        countrycodes: 'BO', 
+                                        viewbox: '-66.3,-17.6,-65.9,-17.2', 
+                                        bounded: 1 
+                                    }
+                                });
+
+                                var geocoderControl = L.Control.geocoder({
+                                    query: '',
+                                    placeholder: 'Buscar en Cochabamba...',
+                                    geocoder: geocoder,
+                                    defaultMarkGeocode: false 
+                                }).addTo(map);
+
+                                var currentMarker; 
+
+
+                                geocoderControl.on('markgeocode', function (e) {
+                                    var latlng = e.geocode.center;
+
+                                    if (currentMarker) {
+                                        map.removeLayer(currentMarker);
+                                    }
+
+                                    currentMarker = L.circleMarker(latlng, {
+                                        radius: 10,
+                                        color: 'red',
+                                        fillColor: '#f03',
+                                        fillOpacity: 0.8
+                                    }).addTo(map);
+
+                                    map.setView(latlng, 15);
+                                    currentMarker.bindPopup("Ubicación encontrada: " + e.geocode.name.split(',')[0]).openPopup();
+                                });
+
+                                if (navigator.geolocation) {
+                                    navigator.geolocation.getCurrentPosition(function (position) {
+                                        var lat = position.coords.latitude;
+                                        var lng = position.coords.longitude;
+                                        map.setView([lat, lng], 15);
+
+                                        if (currentLocationMarker) {
+                                            currentLocationMarker.setLatLng([lat, lng]);
+                                        } else {
+                                            currentLocationMarker = L.circleMarker([lat, lng], {
+                                                color: 'black',
+                                                fillColor: 'blue',
+                                                fillOpacity: 0.8,
+                                                radius: 10
+                                            }).addTo(map).bindPopup("Tú estás aquí").openPopup();
+                                        }
+                                    }, function (error) {
+                                        console.error("Error al obtener la ubicación: " + error.message);
+                                    }, {
+                                        enableHighAccuracy: true,
+                                        maximumAge: 10000,
+                                        timeout: 5000
+                                    });
+                                } else {
+                                    console.error("Geolocalización no es soportada por este navegador.");
+                                }
+                                function locateUser() {
+                                    if (navigator.geolocation) {
+                                        navigator.geolocation.getCurrentPosition(function (position) {
+                                            const lat = position.coords.latitude;
+                                            const lng = position.coords.longitude;
+
+                                            // Centrar el mapa en la ubicación actual
+                                            map.setView([lat, lng], 15);
+
+                                            // Añadir o mover el marcador de la ubicación actual
+                                            if (currentLocationMarker) {
+                                                currentLocationMarker.setLatLng([lat, lng]);
+                                            } else {
+                                                currentLocationMarker = L.circleMarker([lat, lng], {
+                                                    color: 'black',
+                                                    fillColor: 'blue',
+                                                    fillOpacity: 0.8,
+                                                    radius: 10
+                                                }).addTo(map).bindPopup("Tú estás aquí").openPopup();
+                                            }
+                                        }, function (error) {
+                                            console.error("Error al obtener la ubicación: " + error.message);
+                                        }, {
+                                            enableHighAccuracy: true,
+                                            maximumAge: 10000,
+                                            timeout: 5000
+                                        });
+                                    } else {
+                                        console.error("Geolocalización no es soportada por este navegador.");
+                                    }
+                                }
+
+                                document.getElementById('locate-btn').addEventListener('click', function () {
+                                    locateUser();
+                                });
+
+                                locateUser();
+                                map.on('click', function (e) {
+                                    if (selecting) {
+                                        let marker;
+                                        if (selecting === 'origin') {
+                                            originCoords = { lat: e.latlng.lat, lng: e.latlng.lng };
+                                            if (originMarker) {
+                                                originMarker.setLatLng(e.latlng);
+                                            } else {
+                                                originMarker = L.marker(e.latlng).addTo(map);
+                                            }
+                                            marker = originMarker;
+                                        } else if (selecting === 'destination') {
+                                            destinationCoords = { lat: e.latlng.lat, lng: e.latlng.lng };
+                                            if (destinationMarker) {
+                                                destinationMarker.setLatLng(e.latlng);
+                                            } else {
+                                                destinationMarker = L.marker(e.latlng).addTo(map);
+                                            }
+                                            marker = destinationMarker;
+                                        }
+
+                                        fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${e.latlng.lng},${e.latlng.lat}.json?access_token=pk.eyJ1IjoiZmVycWl1IiwiYSI6ImNsemxwZ3Y5azA1Y3Yya3BsaHc4Z2M0MDUifQ.6cTA3adpx2Vufg2fZiyeVQ`)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                let locationName = data.features[0]?.place_name.replace(", Cochabamba, Cochabamba, Bolivia", "") || "Ubicación seleccionada";
+                                                if (selecting === 'origin') {
+                                                    document.getElementById('selector-origen').innerText = `Origen: ${locationName}`;
+                                                } else if (selecting === 'destination') {
+                                                    document.getElementById('selector-destino').innerText = `Destino: ${locationName}`;
+                                                }
+                                                toggleMenu(`menu-${selecting}`);
+                                                selecting = false;
+                                                checkAndRedirect();
+                                            })
+                                            .catch(error => console.error('Error al obtener la información de la ubicación:', error));
+                                    }
+                                });
+                            });
+
+                            function toggleMenu(menuId) {
+                                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                                    if (menu.id !== menuId) {
+                                        menu.style.display = 'none';
+                                    }
+                                });
+
+                                var menu = document.getElementById(menuId);
+                                if (menu) {
+                                    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+                                }
+                            }
+
+                            function setOrigin(option) {
+                                document.getElementById('selector-origen').innerText = `Origen: ${option}`;
+                                toggleMenu('menu-origen');
+
+                                if (option === 'Su ubicación') {
+                                    if (originMarker) {
+                                        map.removeLayer(originMarker);
+                                        originMarker = null;
+                                    }
+                                    if (currentLocationMarker) {
+                                        map.setView(currentLocationMarker.getLatLng(), 15);
+                                        originCoords = {
+                                            lat: currentLocationMarker.getLatLng().lat,
+                                            lng: currentLocationMarker.getLatLng().lng
+                                        };
+                                    }
+                                } else {
+                                    originCoords = null;
+                                }
+
+                                updateDropdownOptions('origin');
+                                checkAndRedirect();
+                            }
+
+                            function setDestination(option) {
+                                document.getElementById('selector-destino').innerText = `Destino: ${option}`;
+                                toggleMenu('menu-destino');
+
+                                if (option === 'Su ubicación') {
+                                    if (destinationMarker) {
+                                        map.removeLayer(destinationMarker);
+                                        destinationMarker = null;
+                                    }
+                                    if (currentLocationMarker) {
+                                        map.setView(currentLocationMarker.getLatLng(), 15);
+                                        destinationCoords = {
+                                            lat: currentLocationMarker.getLatLng().lat,
+                                            lng: currentLocationMarker.getLatLng().lng
+                                        };
+                                    }
+                                } else {
+                                    destinationCoords = null;
+                                }
+
+                                updateDropdownOptions('destination');
+                                checkAndRedirect();
+                            }
+
+                            function chooseOnMap(type) {
+                                selecting = type;
+                                toggleMenu(`menu-${type}`);
+                            }
+
+                            function updateDropdownOptions(type) {
+                                const originMenuItems = document.querySelectorAll('#menu-origen div');
+                                const destinationMenuItems = document.querySelectorAll('#menu-destino div');
+
+                                if (type === 'origin' && originCoords && originCoords.lat && originCoords.lng) {
+                                    destinationMenuItems[0].style.display = 'none';
+                                } else if (type === 'destination' && destinationCoords && destinationCoords.lat && destinationCoords.lng) {
+                                    originMenuItems[0].style.display = 'none';
+                                } else {
+                                    originMenuItems[0].style.display = 'block';
+                                    destinationMenuItems[0].style.display = 'block';
+                                }
+                            }
+
+                            function checkAndRedirect() {
+                                if (originCoords && destinationCoords) {
+                                    mostrarModals('modal-success');
+                                    setTimeout(function () {
+                                        const url = `@Url.Action("ViewLinesPerson", "Line")?latitudInicial=${originCoords.lat}&longitudInicial=${originCoords.lng}&latitudFinal=${destinationCoords.lat}&longitudFinal=${destinationCoords.lng}`;
+                                        window.location.href = url;
+                                                            },1000)
+
+                                }
+                            }
+
+                            const video = document.createElement("video");
+
+                            const canvasElement = document.getElementById("qr-canvas");
+                            const canvas = canvasElement.getContext("2d");
+
+                            const btnScanQR = document.getElementById("btn-scan-qr");
+
+                            let scanning = false;
+
+                            const encenderCamara = () => {
+                                navigator.mediaDevices
+                                    .getUserMedia({ video: { facingMode: "environment" } })
+                                    .then(function (stream) {
+                                        scanning = true;
+                                        btnScanQR.hidden = true;
+                                        canvasElement.hidden = false;
+                                        video.setAttribute("playsinline", true);
+                                        video.srcObject = stream;
+                                        video.play();
+                                        tick();
+                                        scan();
+                                    });
+                            };
+
+                            function tick() {
+                                canvasElement.height = video.videoHeight;
+                                canvasElement.width = video.videoWidth;
+                                canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+
+                                scanning && requestAnimationFrame(tick);
+                            }
+
+                            function scan() {
+                                try {
+                                    qrcode.decode();
+                                } catch (e) {
+                                    setTimeout(scan, 300);
+                                }
+                            }
+
+                            const cerrarCamara = () => {
+                                video.srcObject.getTracks().forEach((track) => {
+                                    track.stop();
+                                });
+                                canvasElement.hidden = true;
+                                btnScanQR.hidden = false;
+                            };
+
+                            qrcode.callback = (respuesta) => {
+                                if (respuesta) {
+                                    const urlQRs = new URL(respuesta);
+                                    const placaValue = urlQRs.searchParams.get('placa');
+                                    if (placaValue) {
+                                        const urlQR = '/Home/QRActions?placa=' + encodeURIComponent(placaValue);
+                                        cerrarCamara();
+                                        window.location.href = urlQR;
+                                    } else {
+                                        console.error("El parámetro 'placa' no se encontró en la URL.");
+                                    }
+                                }
+                            };
+
+                            const mostrarModal = () => {
+                                document.getElementById("modal").style.display = "block";
+                                encenderCamara();
+                            };
+                            const mostrarModals = (name) => {
+                                document.getElementById(name).style.display = "block";
+                            };
+                            const cerrarModal = () => {
+                                document.getElementById("modal").style.display = "none";
+                                cerrarCamara();
+                            };
+
+                            const submitReport = () => {
+                                const id = document.getElementById("userId").textContent.split(': ')[1];
+                                const reason = document.getElementById("motivoReporte").value;
+
+                                var data = { id: id, reason: reason };
+
+
+                                $.ajax({
+                                    url: '@Url.Action("SubmitReport", "Home")',
+                                    type: 'POST',
+                                    data: JSON.stringify(data),
+                                    contentType: 'application/json; charset=utf-8',
+                                    success: function (resultado) {
+                                        console.log("Resultado:", resultado);
+                                        cerrarModal();
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error:', error);
+                                    }
+                                });
+                            };
+        </script>
+    </div>
+                </body>
+                </html>

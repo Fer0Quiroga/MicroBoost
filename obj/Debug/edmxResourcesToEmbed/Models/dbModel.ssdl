@@ -1,0 +1,501 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MicroBusPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Checkpoint">
+    <Key>
+      <PropertyRef Name="idCheckpoint" />
+    </Key>
+    <Property Name="idCheckpoint" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="description" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="idLine" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="status" Type="int" Nullable="false" />
+    <Property Name="idEmployee" Type="varchar" MaxLength="16" />
+    <Property Name="latitud" Type="decimal" Precision="22" Scale="19" Nullable="false" />
+    <Property Name="longitud" Type="decimal" Precision="22" Scale="19" Nullable="false" />
+    <Property Name="numberRoute" Type="int" />
+    <Property Name="minArrival" Type="varchar" MaxLength="5" />
+    <Property Name="minArrivalMarket" Type="varchar" MaxLength="5" />
+  </EntityType>
+  <EntityType Name="DeviationRote">
+    <Key>
+      <PropertyRef Name="idDeviation" />
+    </Key>
+    <Property Name="idDeviation" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="idRouteStart" Type="int" Nullable="false" />
+    <Property Name="idRouteEnd" Type="int" Nullable="false" />
+    <Property Name="numberRoute" Type="int" />
+    <Property Name="idLine" Type="varchar" MaxLength="15" />
+    <Property Name="numTypeRoute" Type="int" />
+  </EntityType>
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="idEmployee" />
+    </Key>
+    <Property Name="idEmployee" Type="varchar" MaxLength="16" Nullable="false" />
+    <Property Name="salary" Type="decimal" Precision="6" Scale="2" />
+    <Property Name="status" Type="int" />
+    <Property Name="dateRegister" Type="datetime" />
+    <Property Name="plate" Type="varchar" MaxLength="8" />
+    <Property Name="idLine" Type="varchar" MaxLength="15" />
+    <Property Name="enabled" Type="int" />
+  </EntityType>
+  <EntityType Name="Line">
+    <Key>
+      <PropertyRef Name="nameLine" />
+    </Key>
+    <Property Name="nameLine" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="price" Type="decimal" Precision="3" Scale="2" Nullable="false" />
+    <Property Name="description" Type="varchar" MaxLength="255" />
+    <Property Name="idAdmin" Type="varchar" MaxLength="16" />
+  </EntityType>
+  <EntityType Name="MechanicalFailures">
+    <Key>
+      <PropertyRef Name="idMechanicalFailutes" />
+    </Key>
+    <Property Name="idMechanicalFailutes" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="plate" Type="varchar" MaxLength="8" />
+    <Property Name="description" Type="varchar" MaxLength="60" />
+    <Property Name="idEmployee" Type="varchar" MaxLength="16" />
+    <Property Name="dateRegister" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Owner">
+    <Key>
+      <PropertyRef Name="idOwner" />
+    </Key>
+    <Property Name="idLine" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="idPerson" Type="varchar" MaxLength="16" Nullable="false" />
+    <Property Name="doc" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="idOwner" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Person">
+    <Key>
+      <PropertyRef Name="nit" />
+    </Key>
+    <Property Name="nit" Type="varchar" MaxLength="16" Nullable="false" />
+    <Property Name="name" Type="varchar" MaxLength="50" />
+    <Property Name="lastname" Type="varchar" MaxLength="50" />
+    <Property Name="phone" Type="varchar" MaxLength="50" />
+    <Property Name="status" Type="int" />
+    <Property Name="dateRegister" Type="datetime" />
+    <Property Name="idRole" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Place">
+    <Key>
+      <PropertyRef Name="idPlace" />
+    </Key>
+    <Property Name="idPlace" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="description" Type="varchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="Report">
+    <Key>
+      <PropertyRef Name="idReport" />
+    </Key>
+    <Property Name="idReport" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="idEmployee" Type="varchar" MaxLength="16" />
+    <Property Name="description" Type="varchar" MaxLength="50" />
+    <Property Name="dateRegister" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Route">
+    <Key>
+      <PropertyRef Name="idRoute" />
+    </Key>
+    <Property Name="idLine" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="idPlace" Type="int" Nullable="false" />
+    <Property Name="idRoute" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="latitud" Type="decimal" Precision="22" Scale="19" Nullable="false" />
+    <Property Name="logintud" Type="decimal" Precision="22" Scale="19" Nullable="false" />
+    <Property Name="numberRoute" Type="int" />
+    <Property Name="status" Type="int" />
+    <Property Name="numPoint" Type="int" />
+    <Property Name="numTypeRoute" Type="int" />
+  </EntityType>
+  <EntityType Name="Sanction">
+    <Key>
+      <PropertyRef Name="idSanction" />
+    </Key>
+    <Property Name="idSanction" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="title" Type="varchar" MaxLength="255" />
+    <Property Name="description" Type="varchar" MaxLength="255" />
+    <Property Name="idLine" Type="varchar" MaxLength="15" />
+    <Property Name="status" Type="int" />
+  </EntityType>
+  <EntityType Name="SanctionEmployee">
+    <Key>
+      <PropertyRef Name="idSanctionEmployee" />
+    </Key>
+    <Property Name="idSanctionEmployee" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="idSanction" Type="int" />
+    <Property Name="idEmployee" Type="varchar" MaxLength="16" />
+    <Property Name="dateRegister" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Star">
+    <Key>
+      <PropertyRef Name="idStar" />
+    </Key>
+    <Property Name="idStar" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="idEmployee" Type="varchar" MaxLength="16" />
+    <Property Name="numStar" Type="int" />
+    <Property Name="dateRegister" Type="datetime" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="TimeControl">
+    <Key>
+      <PropertyRef Name="idTimeControl" />
+    </Key>
+    <Property Name="idTimeControl" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="idEmployee" Type="varchar" MaxLength="16" Nullable="false" />
+    <Property Name="idCheckpoint" Type="int" Nullable="false" />
+    <Property Name="dateRegister" Type="datetime" />
+    <Property Name="plate" Type="varchar" MaxLength="8" />
+    <Property Name="enable" Type="int" />
+    <Property Name="numTicket" Type="int" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="idEmployee" />
+    </Key>
+    <Property Name="idEmployee" Type="varchar" MaxLength="16" Nullable="false" />
+    <Property Name="username" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="password" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="firstEntry" Type="int" Nullable="false" />
+    <Property Name="email" Type="varchar" MaxLength="200" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_Checkpoint_Line">
+    <End Role="Line" Type="Self.Line" Multiplicity="1" />
+    <End Role="Checkpoint" Type="Self.Checkpoint" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Line">
+        <PropertyRef Name="nameLine" />
+      </Principal>
+      <Dependent Role="Checkpoint">
+        <PropertyRef Name="idLine" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Checkpoint_Person">
+    <End Role="Person" Type="Self.Person" Multiplicity="0..1" />
+    <End Role="Checkpoint" Type="Self.Checkpoint" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="nit" />
+      </Principal>
+      <Dependent Role="Checkpoint">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Employee_Line">
+    <End Role="Line" Type="Self.Line" Multiplicity="0..1" />
+    <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Line">
+        <PropertyRef Name="nameLine" />
+      </Principal>
+      <Dependent Role="Employee">
+        <PropertyRef Name="idLine" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Employee_Person">
+    <End Role="Person" Type="Self.Person" Multiplicity="1" />
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="nit" />
+      </Principal>
+      <Dependent Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MechanicalFailures_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="MechanicalFailures" Type="Self.MechanicalFailures" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="MechanicalFailures">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Owner_Line">
+    <End Role="Line" Type="Self.Line" Multiplicity="1" />
+    <End Role="Owner" Type="Self.Owner" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Line">
+        <PropertyRef Name="nameLine" />
+      </Principal>
+      <Dependent Role="Owner">
+        <PropertyRef Name="idLine" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Owner_Person">
+    <End Role="Person" Type="Self.Person" Multiplicity="1" />
+    <End Role="Owner" Type="Self.Owner" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="nit" />
+      </Principal>
+      <Dependent Role="Owner">
+        <PropertyRef Name="idPerson" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Report_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="Report" Type="Self.Report" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="Report">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Route_Line">
+    <End Role="Line" Type="Self.Line" Multiplicity="1" />
+    <End Role="Route" Type="Self.Route" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Line">
+        <PropertyRef Name="nameLine" />
+      </Principal>
+      <Dependent Role="Route">
+        <PropertyRef Name="idLine" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Route_Place">
+    <End Role="Place" Type="Self.Place" Multiplicity="1" />
+    <End Role="Route" Type="Self.Route" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Place">
+        <PropertyRef Name="idPlace" />
+      </Principal>
+      <Dependent Role="Route">
+        <PropertyRef Name="idPlace" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Sanction_Line">
+    <End Role="Line" Type="Self.Line" Multiplicity="0..1" />
+    <End Role="Sanction" Type="Self.Sanction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Line">
+        <PropertyRef Name="nameLine" />
+      </Principal>
+      <Dependent Role="Sanction">
+        <PropertyRef Name="idLine" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SanctionEmployee_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="SanctionEmployee" Type="Self.SanctionEmployee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="SanctionEmployee">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SanctionEmployee_Sanction">
+    <End Role="Sanction" Type="Self.Sanction" Multiplicity="0..1" />
+    <End Role="SanctionEmployee" Type="Self.SanctionEmployee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sanction">
+        <PropertyRef Name="idSanction" />
+      </Principal>
+      <Dependent Role="SanctionEmployee">
+        <PropertyRef Name="idSanction" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Star_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="Star" Type="Self.Star" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="Star">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TimeControl_Checkpoint">
+    <End Role="Checkpoint" Type="Self.Checkpoint" Multiplicity="1" />
+    <End Role="TimeControl" Type="Self.TimeControl" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Checkpoint">
+        <PropertyRef Name="idCheckpoint" />
+      </Principal>
+      <Dependent Role="TimeControl">
+        <PropertyRef Name="idCheckpoint" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TimeControl_Employee1">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
+    <End Role="TimeControl" Type="Self.TimeControl" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="TimeControl">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_User_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="idEmployee" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="idEmployee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+  <Function Name="prcCreateChofer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Nit" Type="varchar" Mode="In" />
+    <Parameter Name="Salary" Type="decimal" Mode="In" />
+    <Parameter Name="Plate" Type="varchar" Mode="In" />
+    <Parameter Name="Linea" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="version" Type="int" Mode="In" />
+    <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+  </Function>
+  <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="version" Type="int" Mode="In" />
+    <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+  </Function>
+  <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="UltCheckpoint" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Linea" Type="varchar" Mode="In" />
+  </Function>
+  <EntityContainer Name="MicroBusPModelStoreContainer">
+    <EntitySet Name="Checkpoint" EntityType="Self.Checkpoint" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DeviationRote" EntityType="Self.DeviationRote" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Line" EntityType="Self.Line" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MechanicalFailures" EntityType="Self.MechanicalFailures" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Owner" EntityType="Self.Owner" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Person" EntityType="Self.Person" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Place" EntityType="Self.Place" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Report" EntityType="Self.Report" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Route" EntityType="Self.Route" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Sanction" EntityType="Self.Sanction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SanctionEmployee" EntityType="Self.SanctionEmployee" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Star" EntityType="Self.Star" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TimeControl" EntityType="Self.TimeControl" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Checkpoint_Line" Association="Self.FK_Checkpoint_Line">
+      <End Role="Line" EntitySet="Line" />
+      <End Role="Checkpoint" EntitySet="Checkpoint" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Checkpoint_Person" Association="Self.FK_Checkpoint_Person">
+      <End Role="Person" EntitySet="Person" />
+      <End Role="Checkpoint" EntitySet="Checkpoint" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Employee_Line" Association="Self.FK_Employee_Line">
+      <End Role="Line" EntitySet="Line" />
+      <End Role="Employee" EntitySet="Employee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Employee_Person" Association="Self.FK_Employee_Person">
+      <End Role="Person" EntitySet="Person" />
+      <End Role="Employee" EntitySet="Employee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MechanicalFailures_Employee" Association="Self.FK_MechanicalFailures_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="MechanicalFailures" EntitySet="MechanicalFailures" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Owner_Line" Association="Self.FK_Owner_Line">
+      <End Role="Line" EntitySet="Line" />
+      <End Role="Owner" EntitySet="Owner" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Owner_Person" Association="Self.FK_Owner_Person">
+      <End Role="Person" EntitySet="Person" />
+      <End Role="Owner" EntitySet="Owner" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Report_Employee" Association="Self.FK_Report_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="Report" EntitySet="Report" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Route_Line" Association="Self.FK_Route_Line">
+      <End Role="Line" EntitySet="Line" />
+      <End Role="Route" EntitySet="Route" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Route_Place" Association="Self.FK_Route_Place">
+      <End Role="Place" EntitySet="Place" />
+      <End Role="Route" EntitySet="Route" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Sanction_Line" Association="Self.FK_Sanction_Line">
+      <End Role="Line" EntitySet="Line" />
+      <End Role="Sanction" EntitySet="Sanction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SanctionEmployee_Employee" Association="Self.FK_SanctionEmployee_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="SanctionEmployee" EntitySet="SanctionEmployee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SanctionEmployee_Sanction" Association="Self.FK_SanctionEmployee_Sanction">
+      <End Role="Sanction" EntitySet="Sanction" />
+      <End Role="SanctionEmployee" EntitySet="SanctionEmployee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Star_Employee" Association="Self.FK_Star_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="Star" EntitySet="Star" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TimeControl_Checkpoint" Association="Self.FK_TimeControl_Checkpoint">
+      <End Role="Checkpoint" EntitySet="Checkpoint" />
+      <End Role="TimeControl" EntitySet="TimeControl" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TimeControl_Employee1" Association="Self.FK_TimeControl_Employee1">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="TimeControl" EntitySet="TimeControl" />
+    </AssociationSet>
+    <AssociationSet Name="FK_User_Employee" Association="Self.FK_User_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="User" EntitySet="User" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

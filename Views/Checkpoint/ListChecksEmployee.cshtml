@@ -1,0 +1,267 @@
+﻿@model IEnumerable<ProyectoControlLineaBus.Models.MuestraListCheckpoint>
+
+@{
+    ViewBag.Title = "ListChecksEmployee";
+}
+<head>
+    <title class="text-center">Lista de Rutas</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            font-weight: bold
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            font-weight: bold;
+        }
+
+        .btn-info {
+            background-color: #006a78;
+            border-color: #006a78;
+            font-weight: bold;
+        }
+
+        .btn-warning {
+            background-color: #5c5c00;
+            border-color: #5c5c00;
+            font-weight: bold;
+        }
+
+        #map-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #custom-image {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 250px;
+            height: 50px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        .modal-custom {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content-custom, .modal-content {
+            background-color: #242943;
+            color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-header {
+            border-bottom: none;
+        }
+
+        .modal-footer {
+            border-top: none;
+            justify-content: center;
+        }
+
+        .close-custom, .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: white;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        .dropdown-item {
+            color: black !important;
+            font-weight: bold !important;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        #fallaMecanica {
+            font-weight: bold;
+        }
+
+            #fallaMecanica option {
+                font-weight: bold;
+            }
+
+        .dropdown-item:hover {
+            background-color: #343a40;
+            color: white !important;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #343a40;
+            color: white;
+        }
+    </style>
+</head>
+<div class="text-center">
+    <h2>Lista de Paradas CI:@ViewBag.ci</h2>
+</div>
+
+
+<div class="row">
+    <div class="col-md-1 mb-2">
+        @Html.ActionLink("Volver", "Index", "Employee", "", new { @class = "btn btn-outline-primary" })
+    </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-1 mb-2">
+        @Html.ActionLink("Agregar a Nueva Parada", "AddCheckpoint", new {id = @ViewBag.ci}, new { @class = "btn btn-outline-info" })
+    </div>
+</div>
+<table class="table text-center text-white">
+    <tr>
+        <th style="text-align:center">
+           PARADAS
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.description)
+            </td>
+            <td>
+                <a href="#" class="btn btn-danger mb-2" onclick="abrirModalEliminarControlador(event, '@item.description', '@item.idCheckpoint')">Quitar Parada</a>
+            </td>
+        </tr>
+    }
+
+</table>
+<div id="modal-eliminacionControlador" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalEliminarControladorLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-black" id="modalEliminarControladorLabel">¿Estás seguro?</h5>
+                <button type="button" class="close text-black" onclick="cerrarModal('modal-eliminacionControlador')" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-black">
+                <p>Se eliminará el siguiente controlador: <label id="nameControlador"></label></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-eliminacionControlador')">CANCELAR</button>
+                <a id="confirmDeleteControlador" href="#" class="btn btn-danger">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+            function abrirModalEliminarControlador(event, name, idEmployee) {
+            event.preventDefault();
+            document.getElementById('nameControlador').innerText = name;
+            document.getElementById('confirmDeleteControlador').setAttribute('href', '@Url.Action("DeleteEmployee", "Checkpoint")/?id=' + idEmployee+"&employee="+@ViewBag.ci);
+            $('#modal-eliminacionControlador').modal('show');
+        }
+    function cerrarModal(idModal) {
+        $('#' + idModal).modal('hide');
+    }
+
+</script>

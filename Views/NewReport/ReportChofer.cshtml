@@ -1,0 +1,197 @@
+﻿@model List<ProyectoControlLineaBus.Models.MostrarReportesChofer>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Reporte de Chofer - @ViewBag.Name</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+    <style>
+        .btn-outline-primary,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-secondary,
+        .btn-outline-success,
+        .btn-outline-info {
+            border-width: 4px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-outline-danger {
+            border-color: rgba(220, 53, 69, 0.7);
+        }
+
+        .btn-outline-info {
+            border-color: rgba(23, 162, 184, 0.7);
+        }
+
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        , .btn-primary, .btn-danger {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+        .btn-danger {
+            font-weight: bold;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-primary {
+            font-weight: bold;
+            background-color: rgba(0, 123, 255, 0.7);
+            border-color: rgba(0, 123, 255, 0.7);
+        }
+        .bold-label {
+            font-weight: bold;
+        }
+
+        .table th, .table td {
+            color: white; /* Texto blanco en la tabla */
+        }
+        select {
+            font-weight: bold;
+        }
+
+            select option {
+                font-weight: bold;
+            }
+    </style>
+</head>
+<body>
+    <h2 class="text-center">Reporte de Chofer - @ViewBag.Name</h2>
+    <div class="row">
+        <div class="col-md-3 mb-2">
+            @Html.ActionLink("Volver", "Index", "Employee", "", new { @class = "btn btn-outline-primary" })
+        </div>
+    </div>
+    <!-- Formulario para seleccionar mes y año -->
+    <form id="filterForm">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <label for="month" class="bold-label">Mes:</label>
+                <select style="font-weight:bold" id="month" name="month" class="form-control">
+                    @for (int i = 1; i <= 12; i++)
+                    {
+                        <option value="@i" @(ViewBag.CurrentMonth == i ? "selected" : "")>@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i).ToUpper()</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="year" class="bold-label">Año:</label>
+                <select id="year" style="font-weight:bold" name="year" class="form-control">
+                    @for (int i = ViewBag.CurrentYear; i >= 2000; i--)
+                    {
+                        <option value="@i" @(ViewBag.CurrentYear == i ? "selected" : "")>@i</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <!-- Botón para redirigir a la nueva página -->
+                <button type="button" id="redirectButton" class="btn btn-primary mt-4">Imprimir</button>
+            </div>
+        </div>
+    </form>
+
+    <table border="1" class="table">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th class="text-center">Personas que Reportaron</th>
+            </tr>
+        </thead>
+        <tbody id="reportTable">
+            @foreach (var item in Model)
+            {
+                <tr data-month="@item.Month" data-year="@item.Year">
+                    <td>@item.Descripcion</td>
+                    <td class="text-center">@item.Count</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            // Filtrar la tabla según el mes y año seleccionados
+            $('#month, #year').on('change', function () {
+                filterTable();
+            });
+
+            function filterTable() {
+                var selectedMonth = parseInt($('#month').val());
+                var selectedYear = parseInt($('#year').val());
+
+                // Iterar sobre cada fila de la tabla
+                $('#reportTable tr').each(function () {
+                    var rowMonth = parseInt($(this).data('month'));
+                    var rowYear = parseInt($(this).data('year'));
+
+                    // Mostrar/ocultar fila según los filtros
+                    if ((selectedMonth === rowMonth || isNaN(selectedMonth)) &&
+                        (selectedYear === rowYear || isNaN(selectedYear))) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Inicializar el filtro al cargar la página
+            filterTable();
+
+            $('#redirectButton').on('click', function() {
+                var selectedMonth = $('#month').val();
+                var selectedYear = $('#year').val();
+                var url = `@Url.Action("PrintedReportChofer", "NewReport")?year=${selectedYear}&month=${selectedMonth}&id=@ViewBag.Id`;
+                window.location.href = url;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ProyectoControlLineaBus.Models.TimeControl>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+</head>
+<div style="margin-top:5%"></div>
+<h2 class="text-center">Control Diario</h2>
+@ViewBag.Mensaje
+@if (ViewBag.Mensaje == "")
+{
+    <p>
+        @Html.ActionLink("Crear Nuevo", "Create", "", new { @class = "btn btn-info" })
+    </p>
+    <table class="table text-center text-white">
+        <tr>
+            <th style="text-align:center">
+                Placa
+            </th>
+            <th style="text-align:center">
+                Fecha y hora de registro
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.plate)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.dateRegister)
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+

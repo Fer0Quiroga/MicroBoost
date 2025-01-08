@@ -1,0 +1,38 @@
+﻿@model ProyectoControlLineaBus.Models.Person
+
+@{
+    ViewBag.Title = "Details";
+}
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+
+</head>
+<div style="margin-top:5%"></div>
+<body>
+    <h2  class="text-center">Detalles NIT: @Model.nit</h2>
+
+    <div>
+        <hr />
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-5 mb-2">
+                <h3> Nombre </h3>
+                @(Model.name + " " + Model.lastname)
+            </div>
+            <div class="col-md-4 mb-2">
+                <h3>Teléfono</h3>
+                @Html.DisplayFor(model => model.phone)
+            </div>
+        </div>
+    </div>
+    <p class="mt-5">
+        @Html.ActionLink("Volver a la Lista", "Index","Owner", new { @class = "btn btn-outline-primary mb-2" })
+    </p>
+</body>
